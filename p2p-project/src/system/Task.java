@@ -2,12 +2,10 @@ package system;
 
 import java.util.LinkedList;
 
-import system.Executor.TaskID;
-
 
 public abstract class Task {
-	public TaskID ID;
-	public TaskID returnID;
+	public String ID;  // format : 0-2-5-3-10-19....    The id is unique and describes the tree
+	public String returnID;
 	public int joinCounter;
 	public int returnArgumentNumber;
 	protected Object[] args;
@@ -15,7 +13,7 @@ public abstract class Task {
 	public Task spawn_next;
 	public int spawn_nextJoin;
 	public Object send_argument;
-	public Peer paretnHolder; // where to send arguments
+	public Peer creator; // where to send arguments
 	
 	
 	public Task(){}

@@ -13,8 +13,6 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import system.Executor.TaskID;
-
 public class PeerImpl implements Peer {
 	static PeerImpl peer;
 	
@@ -23,7 +21,7 @@ public class PeerImpl implements Peer {
 	
 	
 	// Compute stuff: 
-	private static final Map<TaskID, Task> waitMap = new ConcurrentHashMap<TaskID , Task>();
+	public Map<String, Task> waitMap = new ConcurrentHashMap<String , Task>();
 	private static final BlockingDeque<Task> readyQ = new LinkedBlockingDeque<Task>();
 	
 	public static void main(String[] args) {
@@ -146,15 +144,23 @@ public class PeerImpl implements Peer {
 		return readyQ.getFirst();
 	};
 	
-	private int taskID = 1;
-	
-	public int getNextTaskID(){
-		return taskID++;
-	}
 	
 	
 	public void putWaitMap(Task task){
 		waitMap.put(task.ID, task);
+	}
+	
+	public void placeArgument(Peer peer, String ID, Object returnValue, int returnArgumentNumber){
+		
+	}
+	
+	public void putReadyQ(Task t){
+		try {
+			readyQ.put(t);
+		} catch (InterruptedException e) {
+			System.out.println("ERROR: putRreadyQ");
+			e.printStackTrace();
+		}
 	}
 	
 	
