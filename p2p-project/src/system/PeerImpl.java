@@ -8,7 +8,9 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class PeerImpl implements Peer {
@@ -16,6 +18,12 @@ public class PeerImpl implements Peer {
 	
 	static final BlockingDeque<Message> messages = new LinkedBlockingDeque<Message>();
 	public ArrayList<Peer> peers = new ArrayList<Peer>();
+	
+	
+	// Compute stuff: 
+	private static final Map waitMap = new ConcurrentHashMap();
+	private static final BlockingDeque<Task> readyQ = new LinkedBlockingDeque<Task>();
+	
 	public static void main(String[] args) {
 		if (args.length == 0){
 			System.out.println("Missing initPeer argument");
@@ -87,7 +95,7 @@ public class PeerImpl implements Peer {
 		public UI(){}
 		public void run(){
 			while(true){
-				System.out.println("Options: exit, terminate, size, hello");
+				System.out.println("Options: exit, terminate, size, hello, mandelbrot");
 				try {
 					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			        String input = br.readLine();
@@ -106,11 +114,29 @@ public class PeerImpl implements Peer {
 						Message msg = new HelloMessage();
 						msg.broadcast(peer, false);
 					}
+					if (input.equals("mandelbrot")){
+						ClientImpl client = new ClientImpl(peer, "mandelbrot");
+						client.start();
+					}
+					
 				} catch (IOException e) {
 					System.out.println("ERROR: UI.run()");
 					e.printStackTrace();
 				}
 			}
+		}
+	}
+	
+	public void putTask(Task t){
+		// Notify all that a new task has arrived. Spesify an ID
+		// PUT TASK TO QUEUE
+		// Start a handler that steals/gives tasks
+		try {
+			readyQ.putFirst(t);
+			System.out.println("New task registered");
+		} catch (InterruptedException e) {
+			System.out.println("Failed to put first task to readyQ");
+			e.printStackTrace();
 		}
 	}
 	

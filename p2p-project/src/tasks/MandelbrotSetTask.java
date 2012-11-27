@@ -24,7 +24,7 @@ public class MandelbrotSetTask {
 	 * @param taskCoordX is the coordinate describing where on the x axis this part of the solution will be placed in the complete picture
 	 * @param taskCoordY is the coordinate describing where on the y axis this part of the solution will be placed in the complete picture
 	 */
-
+	public MandelbrotSetTask(){}
 	
 	
 	/**
