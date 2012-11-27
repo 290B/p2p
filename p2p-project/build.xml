@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project name="P2P farm" default="dist" basedir=".">
+<!-- set global properties for this build -->
+	<property name="src" location="src"/>
+	<property name="build" location="build"/>
+	<property name="dist"  location="dist"/>
+	
+
+		
+	<property name="initPeer" value="localhost"/>
+	<property name="initPort" value="1099"/>
+	
+	<property name="localPort" value="1096"/>
+	
+	
+  <target name="compile" description="compile the source">
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>  
+  
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}"/>
+  </target>
+  
+  <target name="javadoc" description="create javadocs">
+  	<javadoc packagenames="tasks.*,api.*" sourcepath="${src}" destdir="documents/javadoc" />
+  </target>
+  
+  <target name="peer" depends="compile" description="Start a peer" >
+  	<java classname="system.PeerImpl" fork="true">
+  	  <jvmarg value="-Djava.security.policy=policy"/>
+  	  <arg value="${localPort}"/>
+  	  <arg value="${initPeer}"/>
+  	  <arg value="${initPort}"/>
+  	  <classpath>
+  	    <pathelement location="build/"/>
+  	  </classpath>
+  	</java>
+  </target>  
+  
+  <target name="peerport" depends="compile" description="Start a peer" >
+  	<input message="enter port number:" addproperty="customport">
+	</input>
+  	<java classname="system.PeerImpl" fork="true">
+  	  <jvmarg value="-Djava.security.policy=policy"/>
+  	  <arg value="${customport}"/>
+  	  <arg value="${initPeer}"/>
+  	  <arg value="${initPort}"/>
+  	  <classpath>
+  	    <pathelement location="build/"/>
+  	  </classpath>
+  	</java>
+  </target>
+  
+  <target name="firstPeer" depends="compile" description="Start a peer" >
+  	<java classname="system.PeerImpl" fork="true">
+  	  <jvmarg value="-Djava.security.policy=policy"/>
+  	  <arg value="${initPort}"/>
+  	  <classpath>
+  	    <pathelement location="build/"/>
+  	  </classpath>
+  	</java>
+  </target>  
+    
+  <target name="clean" description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+  
+</project>
+
