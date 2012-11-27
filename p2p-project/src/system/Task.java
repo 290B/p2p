@@ -12,7 +12,7 @@ public abstract class Task {
 	public LinkedList<Task> spawned = new LinkedList<Task>();
 	public Task spawn_next;
 	public int spawn_nextJoin;
-	public Object send_argument;
+	public Object send_argument = null;
 	public Peer creator; // where to send arguments
 	
 	
@@ -32,6 +32,4 @@ public abstract class Task {
 	protected void send_argument(Object value){
 		send_argument = value;
 	}
-	
-
 }

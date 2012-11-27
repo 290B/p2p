@@ -9,9 +9,12 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class PeerImpl implements Peer {
 	static PeerImpl peer;
@@ -23,6 +26,7 @@ public class PeerImpl implements Peer {
 	// Compute stuff: 
 	public Map<String, Task> waitMap = new ConcurrentHashMap<String , Task>();
 	private static final BlockingDeque<Task> readyQ = new LinkedBlockingDeque<Task>();
+	private static final BlockingQueue<Object> result = new LinkedBlockingQueue<Object>();
 	
 	public static void main(String[] args) {
 		if (args.length == 0){
@@ -56,6 +60,9 @@ public class PeerImpl implements Peer {
 			
 			MessageProxy messageProxy = peer.new MessageProxy();
 			messageProxy.start();
+			
+			Executor executor = new Executor(peer);
+			executor.start();
 			
 			UI ui = peer.new UI();
 			ui.start();
@@ -118,6 +125,11 @@ public class PeerImpl implements Peer {
 						ClientImpl client = new ClientImpl(peer, "mandelbrot");
 						client.start();
 					}
+					if (input.equals("random")){
+						Random rnd = new Random();
+						Message msg = new PingRandomMessage();
+						msg.send(peers.get(rnd.nextInt(peers.size())));
+					}
 					
 				} catch (IOException e) {
 					System.out.println("ERROR: UI.run()");
@@ -132,8 +144,11 @@ public class PeerImpl implements Peer {
 		// PUT TASK TO QUEUE
 		// Start a handler that steals/gives tasks
 		try {
+			t.returnID = "0";
+			t.ID = "0";
 			readyQ.putFirst(t);
 			System.out.println("New task registered");
+			
 		} catch (InterruptedException e) {
 			System.out.println("Failed to put first task to readyQ");
 			e.printStackTrace();
@@ -141,7 +156,13 @@ public class PeerImpl implements Peer {
 	}
 	
 	public Task takeTask(){
-		return readyQ.getFirst();
+		try {
+			return readyQ.takeFirst();
+		} catch (InterruptedException e) {
+			System.out.println("Failed to take task from readyQ");
+			e.printStackTrace();
+		}
+		return null;
 	};
 	
 	
@@ -151,7 +172,8 @@ public class PeerImpl implements Peer {
 	}
 	
 	public void placeArgument(Peer peer, String ID, Object returnValue, int returnArgumentNumber){
-		
+		Message msg = new SendArgumentMessage(peer, ID, returnValue, returnArgumentNumber);
+		msg.send(peer);
 	}
 	
 	public void putReadyQ(Task t){
@@ -161,6 +183,25 @@ public class PeerImpl implements Peer {
 			System.out.println("ERROR: putRreadyQ");
 			e.printStackTrace();
 		}
+	}
+	
+	public void putResult(Object resultObject){
+		try {
+			result.put(resultObject);
+		} catch (InterruptedException e) {
+			System.out.println("ERROR: putResult");
+			e.printStackTrace();
+		}
+	}
+	
+	public Object getResult(){
+		try {
+			return result.take();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 	
 	
