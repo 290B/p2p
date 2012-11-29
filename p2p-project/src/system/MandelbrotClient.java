@@ -14,34 +14,24 @@ import javax.swing.JScrollPane;
 
 import tasks.*;
 
-public class ClientImpl extends Thread{
-	String task_string;
+public class MandelbrotClient extends Thread{
 	Peer peer;
 	
 	// Mandelbrot input data
-	int N_PIXELS = 1024;
-	int ITERATION_LIMIT = 4096;
+	int N_PIXELS = 2048;
+	int ITERATION_LIMIT = 4096*4;
 	double CORNER_X = -0.7510975859375;
 	double CORNER_Y = 0.1315680625;
 	double EDGE_LENGTH = 0.01611;
-	int DEPTH = 4;
+	int DEPTH = 6;
 	// ---------------------------------
 	
 	
-	ClientImpl(Peer peer, String string_task){
-		task_string = string_task;
+	MandelbrotClient(Peer peer, String string_task){
 		this.peer = peer;
 	}
 	
 	public void run(){
-		if (task_string.equals("mandelbrot")){
-			mandelbrotClient();
-		}
-	}
-	
-	private void mandelbrotClient(){
-		
-		
 		MandelbrotSetTask temp = new MandelbrotSetTask();
 		
 		Task split = temp.new Split(CORNER_X, CORNER_Y, EDGE_LENGTH, N_PIXELS, ITERATION_LIMIT, DEPTH);

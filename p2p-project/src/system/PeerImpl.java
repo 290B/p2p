@@ -127,7 +127,7 @@ public class PeerImpl implements Peer {
 						msg.broadcast(peer, false);
 					}
 					if (input.equals("mandelbrot")){
-						ClientImpl client = new ClientImpl(peer, "mandelbrot");
+						MandelbrotClient client = new MandelbrotClient(peer, "mandelbrot");
 						client.start();
 					}
 					if (input.equals("readyQ")){
@@ -239,7 +239,6 @@ public class PeerImpl implements Peer {
 					System.out.println("ERROR: MessageProxy()");
 					e.printStackTrace();
 				}
-				
 			}
 		}
 	}
