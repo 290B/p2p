@@ -1,35 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>A reliable P2P structured compute engine with support for GPU processing using Rootbeer  by 290B</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="A reliable P2P structured compute engine with support for GPU processing using Rootbeer  : We are implementing a P2P compute engine that does not fail if one or multiple peers crashes or disconnects. The system will be scalable and will not suffer from bottlenecks due to network communication. Out of curiosity we also want to implement GPU computation support using Rootbeer." />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>A reliable P2P structured compute engine with support for GPU processing using Rootbeer </title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">A reliable P2P structured compute engine with support for GPU processing using Rootbeer </h1>
-        <p class="header">We are implementing a P2P compute engine that does not fail if one or multiple peers crashes or disconnects. The system will be scalable and will not suffer from bottlenecks due to network communication. Out of curiosity we also want to implement GPU computation support using Rootbeer.</p>
 
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/290B/p2p/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/290B/p2p/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/290B/p2p">View On GitHub</a></li>
-        </ul>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/290B/p2p">View on GitHub</a>
 
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/290B">290B</a></p>
+          <h1 id="project_title">A reliable P2P structured compute engine with support for GPU processing using Rootbeer </h1>
+          <h2 id="project_tagline">We are implementing a P2P compute engine that does not fail if one or multiple peers crashes or disconnects. The system will be scalable and will not suffer from bottlenecks due to network communication. Out of curiosity we also want to implement GPU computation support using Rootbeer.</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/290B/p2p/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/290B/p2p/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      </header>
-      <section>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h2>Introduction</h2>
 
 <p>A space-worker compute system have one or many centralized spaces. A lot of tasks and data are being send to, from and through these spaces which makes the system vulnerable if one should fail. There are ways to handle a failed space but the process can be complicated. One approach is to let a worker step in as a space and receive a backup state from another space. This is not often a good solution because workers can have different hardware than spaces and might not be that centralized in the physical network. </p>
@@ -79,11 +80,17 @@ Peers are able to solve Rootbeer tasks</p></li>
 
 <p>TODO</p>
       </section>
-      <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">A reliable P2P structured compute engine with support for GPU processing using Rootbeer  maintained by <a href="https://github.com/290B">290B</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+
+    
+
   </body>
 </html>
