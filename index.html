@@ -4,11 +4,11 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="A reliable P2P structured compute engine with support for GPU processing using Rootbeer  : We are implementing a P2P compute engine that does not fail if one or multiple peers crashes or disconnects. The system will be scalable and will not suffer from bottlenecks due to network communication. Out of curiosity we also want to implement GPU computation support using Rootbeer." />
+    <meta name="description" content="P2P and Rootbeer : A reliable P2P structured compute engine with support for GPU processing using Rootbeer " />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>A reliable P2P structured compute engine with support for GPU processing using Rootbeer </title>
+    <title>P2P and Rootbeer</title>
   </head>
 
   <body>
@@ -18,8 +18,8 @@
         <header class="inner">
           <a id="forkme_banner" href="https://github.com/290B/p2p">View on GitHub</a>
 
-          <h1 id="project_title">A reliable P2P structured compute engine with support for GPU processing using Rootbeer </h1>
-          <h2 id="project_tagline">We are implementing a P2P compute engine that does not fail if one or multiple peers crashes or disconnects. The system will be scalable and will not suffer from bottlenecks due to network communication. Out of curiosity we also want to implement GPU computation support using Rootbeer.</h2>
+          <h1 id="project_title">P2P and Rootbeer</h1>
+          <h2 id="project_tagline">A reliable P2P structured compute engine with support for GPU processing using Rootbeer </h2>
 
             <section id="downloads">
               <a class="zip_download_link" href="https://github.com/290B/p2p/zipball/master">Download this project as a .zip file</a>
@@ -31,7 +31,11 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h2>Introduction</h2>
+        <h2>Abstract</h2>
+
+<p>We are implementing a P2P compute engine that does not fail if one or multiple peers crashes or disconnects. The system is scalable and does not suffer from bottlenecks due to network communication. This system will also implement GPU computation support using Rootbeer.</p>
+
+<h2>Introduction</h2>
 
 <p>A space-worker compute system have one or many centralized spaces. A lot of tasks and data are being send to, from and through these spaces which makes the system vulnerable if one should fail. There are ways to handle a failed space but the process can be complicated. One approach is to let a worker step in as a space and receive a backup state from another space. This is not often a good solution because workers can have different hardware than spaces and might not be that centralized in the physical network. </p>
 
@@ -85,7 +89,7 @@ Peers are able to solve Rootbeer tasks</p></li>
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">A reliable P2P structured compute engine with support for GPU processing using Rootbeer  maintained by <a href="https://github.com/290B">290B</a></p>
+        <p class="copyright">P2P and Rootbeer maintained by <a href="https://github.com/290B">290B</a></p>
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
