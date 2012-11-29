@@ -25,8 +25,8 @@ public class PeerImpl implements Peer {
 	
 	// Compute stuff: 
 	public Map<String, Task> waitMap = new ConcurrentHashMap<String , Task>();
-	private static final BlockingDeque<Task> readyQ = new LinkedBlockingDeque<Task>();
-	private static final BlockingQueue<Object> result = new LinkedBlockingQueue<Object>();
+	public final BlockingDeque<Task> readyQ = new LinkedBlockingDeque<Task>();
+	private final BlockingQueue<Object> result = new LinkedBlockingQueue<Object>();
 	
 	public static void main(String[] args) {
 		if (args.length == 0){
@@ -63,6 +63,9 @@ public class PeerImpl implements Peer {
 			
 			Executor executor = new Executor(peer);
 			executor.start();
+			
+			WorkStealer workStealer = peer.new WorkStealer();
+			workStealer.start();
 			
 			UI ui = peer.new UI();
 			ui.start();
@@ -155,6 +158,16 @@ public class PeerImpl implements Peer {
 		}
 	}
 	
+	public void giveTask(Task t){
+		try {
+			readyQ.put(t);
+		} catch (InterruptedException e) {
+			System.out.println("Failed to put task");
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public Task takeTask(){
 		try {
 			return readyQ.takeFirst();
@@ -204,10 +217,6 @@ public class PeerImpl implements Peer {
 		
 	}
 	
-	
-	
-	
-	
 	public class MessageProxy extends Thread{
 		public MessageProxy(){}
 		
@@ -222,6 +231,30 @@ public class PeerImpl implements Peer {
 					e.printStackTrace();
 				}
 				
+			}
+		}
+	}
+	
+	public class WorkStealer extends Thread{
+		public WorkStealer(){}
+		
+		public void run(){
+			while (true){
+				if (peer.readyQ.size() < 2){
+					Random rnd = new Random();
+					Message msg = new GetTaskMessage((Peer)peer);
+					Peer temp = peers.get(rnd.nextInt(peers.size())); 
+					if (temp!=peer){
+						msg.send(temp);
+					}
+					
+				}
+				try {
+					sleep(20);
+				} catch (InterruptedException e) {
+					System.out.println("ERROR: workstealer failed to sleep");
+					e.printStackTrace();
+				}
 			}
 		}
 	}

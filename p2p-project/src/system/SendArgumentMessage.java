@@ -31,7 +31,6 @@ public class SendArgumentMessage extends Message{
 			}else{
 				peer.waitMap.put(ID, temp);
 			}
-			
 		}
 	}
 }

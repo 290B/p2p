@@ -1,9 +1,11 @@
 package system;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 
-public abstract class Task {
+public abstract class Task implements Serializable {
+	private static final long serialVersionUID = 1L;
 	public String ID;  // format : 0-2-5-3-10-19....    The id is unique and describes the tree
 	public String returnID;
 	public int joinCounter;

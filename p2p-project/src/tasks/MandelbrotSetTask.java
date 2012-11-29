@@ -12,8 +12,9 @@ import system.Task;
  *
  */
 
-public class MandelbrotSetTask {
+public class MandelbrotSetTask implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	/**
 	 * 
 	 * @param setCornerX is the x coordinate describing the left bottom corner of the square to calculate, typical value -2
