@@ -15,6 +15,9 @@ public class Executor extends Thread{
 			//System.out.println("Before take task");
 			Task t = peer.takeTask();
 			//System.out.print("Executing task... ");
+			
+			t.setPeerImpl(peer);
+			
 			t.execute();
 			//System.out.println("Done");
 			

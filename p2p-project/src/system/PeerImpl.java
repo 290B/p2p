@@ -16,11 +16,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import system.Task.Shared;
+
 public class PeerImpl implements Peer {
 	static PeerImpl peer;
 	
 	static final BlockingDeque<Message> messages = new LinkedBlockingDeque<Message>();
 	public ArrayList<Peer> peers = new ArrayList<Peer>();
+	private Shared shared;
 	
 	
 	// Compute stuff: 
@@ -60,7 +63,7 @@ public class PeerImpl implements Peer {
 			
 			MessageProxy messageProxy = peer.new MessageProxy();
 			messageProxy.start();
-			
+
 			Executor executor = new Executor(peer);
 			executor.start();
 			
@@ -256,6 +259,45 @@ public class PeerImpl implements Peer {
 					e.printStackTrace();
 				}
 			}
+		}
+	}
+
+	public Shared getShared(){
+		try {
+			return shared.clone(); 
+		} catch (CloneNotSupportedException e) {
+
+			e.printStackTrace();
+			System.exit(0);
+		}
+			return null;
+	}
+	
+	public void setShared(Shared proposedShared){
+		try {
+			if (proposedShared.isNewerThan(shared)){
+				shared = proposedShared.clone();
+				SetSharedVarMessage msg = new SetSharedVarMessage(shared);
+				msg.broadcast(peer, false); //TODO is peer self?
+			}
+
+		} catch (CloneNotSupportedException e) {
+			System.out.println("proposedShared not clonable");
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+	
+	public void setSharedFromRemote(Shared proposedShared){
+		try {
+			if (proposedShared.isNewerThan(shared)){
+				shared = proposedShared.clone();
+			}
+
+		} catch (CloneNotSupportedException e) {
+			System.out.println("proposedShared not clonable");
+			e.printStackTrace();
+			System.exit(0);
 		}
 	}
 }
