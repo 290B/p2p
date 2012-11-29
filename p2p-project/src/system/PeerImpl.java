@@ -27,6 +27,8 @@ public class PeerImpl implements Peer {
 	public Map<String, Task> waitMap = new ConcurrentHashMap<String , Task>();
 	public final BlockingDeque<Task> readyQ = new LinkedBlockingDeque<Task>();
 	private final BlockingQueue<Object> result = new LinkedBlockingQueue<Object>();
+	public int taskExcecuted = 0;
+	public int composeTasksCreated = 0;
 	
 	public static void main(String[] args) {
 		if (args.length == 0){
@@ -105,7 +107,7 @@ public class PeerImpl implements Peer {
 		public UI(){}
 		public void run(){
 			while(true){
-				System.out.println("Options: exit, terminate, size, hello, mandelbrot");
+				System.out.println("Options: exit, terminate, size, hello, mandelbrot, random, readyQ, waitMap");
 				try {
 					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			        String input = br.readLine();
@@ -128,12 +130,18 @@ public class PeerImpl implements Peer {
 						ClientImpl client = new ClientImpl(peer, "mandelbrot");
 						client.start();
 					}
-					if (input.equals("random")){
-						Random rnd = new Random();
-						Message msg = new PingRandomMessage();
-						msg.send(peers.get(rnd.nextInt(peers.size())));
+					if (input.equals("readyQ")){
+							System.out.println("The size of readyQ is : " +  readyQ.size());
 					}
-					
+					if (input.equals("waitMap")){
+						System.out.println("The size of waitMap is : " +  waitMap.size());
+					}
+					if (input.equals("executed")){
+						System.out.println("The number of tasks executed is : " +  taskExcecuted);
+					}
+					if (input.equals("compose")){
+						System.out.println("The number of compose tasks created is : " +  composeTasksCreated);
+					}
 				} catch (IOException e) {
 					System.out.println("ERROR: UI.run()");
 					e.printStackTrace();
@@ -149,6 +157,7 @@ public class PeerImpl implements Peer {
 		try {
 			t.returnID = "0";
 			t.ID = "0";
+			t.creator = peer;
 			readyQ.putFirst(t);
 			System.out.println("New task registered");
 			
@@ -184,9 +193,9 @@ public class PeerImpl implements Peer {
 		waitMap.put(task.ID, task);
 	}
 	
-	public void placeArgument(Peer peer, String ID, Object returnValue, int returnArgumentNumber){
-		Message msg = new SendArgumentMessage(peer, ID, returnValue, returnArgumentNumber);
-		msg.send(peer);
+	public void placeArgument(Peer receiver, String ID, Object returnValue, int returnArgumentNumber){
+		Message msg = new SendArgumentMessage(receiver, ID, returnValue, returnArgumentNumber);
+		msg.send(peer, receiver);
 	}
 	
 	public void putReadyQ(Task t){
@@ -245,12 +254,11 @@ public class PeerImpl implements Peer {
 					Message msg = new GetTaskMessage((Peer)peer);
 					Peer temp = peers.get(rnd.nextInt(peers.size())); 
 					if (temp!=peer){
-						msg.send(temp);
+						msg.send(peer, temp);
 					}
-					
 				}
 				try {
-					sleep(20);
+					sleep(5);
 				} catch (InterruptedException e) {
 					System.out.println("ERROR: workstealer failed to sleep");
 					e.printStackTrace();

@@ -14,6 +14,7 @@ public class Executor extends Thread{
 		while(true){
 			//System.out.println("Before take task");
 			Task t = peer.takeTask();
+			peer.taskExcecuted++;
 			//System.out.print("Executing task... ");
 			t.execute();
 			//System.out.println("Done");
@@ -25,9 +26,10 @@ public class Executor extends Thread{
 				t.spawn_next.returnArgumentNumber = t.returnArgumentNumber;
 				t.spawn_next.joinCounter = t.spawned.size();
 				t.spawn_next.args = new Object[t.spawned.size()];
-				t.spawn_next.creator = (Peer)peer;
+				t.spawn_next.creator = t.creator;//(Peer)peer;
 				
 				peer.putWaitMap(t.spawn_next);
+				peer.composeTasksCreated++;
 				int spawned_counter = 0;
 				for (Task temp : t.spawned){
 					temp.creator = (Peer)peer;

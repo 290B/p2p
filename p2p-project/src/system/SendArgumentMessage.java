@@ -14,7 +14,7 @@ public class SendArgumentMessage extends Message{
 	}
 	
 	public void action(PeerImpl peer) {
-		System.out.println("Argument recieved to ID: " + ID);
+		//System.out.println("Argument recieved to ID: " + ID);
 		if (ID.equals("0")){
 			peer.putResult(returnValue);
 			System.out.println("Task completed");
@@ -27,10 +27,14 @@ public class SendArgumentMessage extends Message{
 			temp.joinCounter--;
 			if (temp.joinCounter <= 0){
 				peer.putReadyQ(temp);
-				System.out.println("Task moved from waitMap to readyQ");
+				System.out.println("Task moved from waitMap to readyQ. ID: " + temp.ID);
 			}else{
 				peer.waitMap.put(ID, temp);
 			}
+		}else{
+			System.out.println("FATAL error! Received argument for task that is not in the waitmap");
+			System.out.println("The task ID was: " + ID);
+			System.exit(0);
 		}
 	}
 }
