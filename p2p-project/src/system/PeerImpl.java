@@ -133,6 +133,12 @@ public class PeerImpl implements Peer {
 						MandelbrotClient client = new MandelbrotClient(peer, "mandelbrot");
 						client.start();
 					}
+					
+					if (input.equals("tsp")){
+						TspClient client = new TspClient(peer);
+						client.start();
+					}
+					
 					if (input.equals("fib")){
 						FibClient client = new FibClient(peer);
 						client.start();
