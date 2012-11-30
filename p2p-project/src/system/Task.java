@@ -43,7 +43,7 @@ public abstract class Task implements Serializable {
 	protected void setSharedFromRemote(Shared proposedShared){peerImpl.setSharedFromRemote(proposedShared);}
 	
 	public interface Shared extends Cloneable{
-
+		
 
 		/** This function will check wheter an object is newer than the one in the space
 		 * @param input is the object that will be checked against the version that is stored in the space

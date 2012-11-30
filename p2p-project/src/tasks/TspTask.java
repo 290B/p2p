@@ -22,7 +22,7 @@ public class TspTask implements Serializable{
 	private static final long serialVersionUID = 227L;		
 	private static final double inf = 10000; 
 
-	public SharedTsp sharedTsp;
+	public SharedTsp sharedTsp = new SharedTsp(inf);
 	public TspReturn currentBestValues = new TspReturn(new ArrayList<Integer>() , inf);
 	public Shared sharedLocal;
 
@@ -56,8 +56,9 @@ public class TspTask implements Serializable{
 		 * 
 		 */
 		public void execute() {
+			setShared(sharedTsp);
 
-			sharedTsp = (SharedTsp)getShared();
+			sharedTsp = (SharedTsp)getShared();			
 
 			//System.out.println("shared is " + sharedTsp.getShared());
 
@@ -376,6 +377,9 @@ public class TspTask implements Serializable{
 		 * 
 		 */
 		public boolean isNewerThan(Shared input) {
+			if (input == null){
+				return true;
+			}
 			if ( (Double) input.getShared() <= this.tspShared){
 				return false;
 			}else{
