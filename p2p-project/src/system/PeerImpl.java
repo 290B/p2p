@@ -135,7 +135,7 @@ public class PeerImpl implements Peer {
 					}
 					
 					if (input.equals("tsp")){
-						TspClient client = new TspClient(peer);
+						TspCli client = new TspCli(peer);
 						client.start();
 					}
 					
