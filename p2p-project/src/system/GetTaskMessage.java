@@ -2,6 +2,8 @@ package system;
 
 import java.rmi.RemoteException;
 
+
+// TODO: create a message for returning tasks
 public class GetTaskMessage extends Message {
 	Peer sender;
 	

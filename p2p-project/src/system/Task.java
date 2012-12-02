@@ -2,6 +2,7 @@ package system;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.UUID;
 
 
 public abstract class Task implements Serializable {
@@ -15,7 +16,7 @@ public abstract class Task implements Serializable {
 	public Task spawn_next;
 	public int spawn_nextJoin;
 	public Object send_argument = null;
-	public Peer creator; // where to send arguments
+	public UUID creator; // where to send arguments
 	public PeerImpl peerImpl;
 	
 	

@@ -10,6 +10,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,8 +23,11 @@ public class PeerImpl implements Peer {
 	static PeerImpl peer;
 	
 	static final BlockingDeque<Message> messages = new LinkedBlockingDeque<Message>();
-	public ArrayList<Peer> peers = new ArrayList<Peer>();
+	//public ArrayList<Peer> peers = new ArrayList<Peer>();
 	private Shared shared = null;
+	UUID peerID;
+	public ArrayList<UUID> keys = new ArrayList<UUID>();
+	public Map<UUID, Peer> peerMap = new ConcurrentHashMap<UUID , Peer>();
 	
 	
 	// Compute stuff: 
@@ -39,6 +43,7 @@ public class PeerImpl implements Peer {
 			if (System.getSecurityManager() == null ) { 
 				System.setSecurityManager(new java.rmi.RMISecurityManager() ); 
 			}
+			
 			// Read user input:
 			String remotePeer;
 			int remotePort;
@@ -75,18 +80,18 @@ public class PeerImpl implements Peer {
 			
 			// ------------------------------------ Starting RMI server. Portnumber is arg[0] -----------------------
 			peer = new PeerImpl();
+			peer.peerID = UUID.randomUUID();
 			Peer stub = (Peer)UnicastRemoteObject.exportObject((Peer)peer, 0);
 			Registry registry = LocateRegistry.createRegistry(localPort);
 			registry.rebind("Peer", stub);
-			peer.peers.add((Peer)peer);
+			peer.addPeer(peer.peerID, (Peer)peer);
 			
 			//-------------------------------------- Connecting to initPeer. Address is args[1], port is args[2] --------------------------------
 			if (!remotePeer.equals("none")){
 				Registry remoteRegistry = LocateRegistry.getRegistry(remotePeer, remotePort);
 	    		Peer initPeer  = (Peer) remoteRegistry.lookup("Peer");
-	    		peer.peers = new ArrayList<Peer>(initPeer.getPeers());
-	    		peer.peers.add((Peer)peer);
-	    		Message msg = new EntryMessage(peer);
+	    		peer.updatePeerMap(initPeer.getPeerMap());
+	    		Message msg = new EntryMessage(peer.peerID, peer);
 	    		msg.broadcast(peer, false);
 			}else{
 			
@@ -113,10 +118,6 @@ public class PeerImpl implements Peer {
 			e.printStackTrace();
 		}
 	}
-	
-	public ArrayList<Peer>  getPeers ()throws RemoteException{
-		return peers;
-	} 
 
 	// ----------------------------------------Message system-----------------------------------
  	public void message(Message msg) throws RemoteException{
@@ -129,7 +130,7 @@ public class PeerImpl implements Peer {
 	    return 31 - Integer.numberOfLeadingZeros(n);
 	}
 	
-	public void hasDisconnected(Peer disconnectedPeer){
+	public void hasDisconnected(UUID disconnectedPeer){
 		Message msg = new DisconnectedMessage(disconnectedPeer);
 		msg.broadcast(this, true);
 	}
@@ -140,9 +141,6 @@ public class PeerImpl implements Peer {
 	public class UI extends Thread{
 		public UI(){}
 		public void run(){
-			//System.out.println("starting tsp");
-			//TspCli client = new TspCli(peer);
-			//client.start();
 			while(true){
 				
 				System.out.println("Options: exit, terminate, size, hello, mandelbrot, random, readyQ, waitMap");
@@ -153,7 +151,7 @@ public class PeerImpl implements Peer {
 						System.exit(0);
 					}
 					if (input.equals("size")){
-						System.out.println("Number of nodes is: " +  peers.size());
+						System.out.println("Number of nodes is: " +  peerMap.size());
 					}
 					if (input.equals("terminate")){
 						Message msg = new TerminateMessage();
@@ -206,7 +204,7 @@ public class PeerImpl implements Peer {
 		try {
 			t.returnID = "0";
 			t.ID = "0";
-			t.creator = peer;
+			t.creator = peerID;
 			readyQ.putFirst(t);
 			System.out.println("New task registered");
 			
@@ -236,14 +234,47 @@ public class PeerImpl implements Peer {
 		return null;
 	};
 	
-	
-	
 	public void putWaitMap(Task task){
 		waitMap.put(task.ID, task);
 	}
 	
-	public void placeArgument(Peer receiver, String ID, Object returnValue, int returnArgumentNumber){
-		Message msg = new SendArgumentMessage(receiver, ID, returnValue, returnArgumentNumber);
+	public synchronized void addPeer(UUID id, Peer peer){
+		if (!peerMap.containsKey(id)){
+			keys.add(id);
+			peerMap.put(id, peer);
+		}
+	}
+	
+	public UUID randomPeer(){
+		Random rnd = new Random();
+		return keys.get(rnd.nextInt(keys.size()));
+	}
+	
+	public synchronized void removePeer(UUID id){
+		if (peerMap.containsKey(id)){
+			keys.remove(id);
+			peerMap.remove(id);
+		}
+	}
+	
+	public synchronized void clearPeerMap(){
+		keys.clear();
+		peerMap.clear();
+	}
+	
+	public Map<UUID, Peer> getPeerMap() throws RemoteException{
+		return peerMap;
+	}
+	
+	public synchronized void updatePeerMap(Map<UUID, Peer> peerMap){
+		for (Map.Entry<UUID, Peer> entry : peerMap.entrySet()){
+			keys.add(entry.getKey());
+		}
+		this.peerMap.putAll(peerMap);
+	}
+	
+	public void placeArgument(UUID receiver, String ID, Object returnValue, int returnArgumentNumber){
+		Message msg = new SendArgumentMessage(ID, returnValue, returnArgumentNumber);
 		msg.send(peer, receiver);
 	}
 	
@@ -298,15 +329,14 @@ public class PeerImpl implements Peer {
 		public void run(){
 			while (true){
 				if (peer.readyQ.size() < 2){
-					Random rnd = new Random();
 					Message msg = new GetTaskMessage((Peer)peer);
-					Peer temp = peers.get(rnd.nextInt(peers.size())); 
-					if (temp!=peer){
+					UUID temp = peer.randomPeer();
+					if (temp!=peer.peerID){
 						msg.send(peer, temp);
 					}
 				}
 				try {
-					sleep(5);
+					sleep(10);
 				} catch (InterruptedException e) {
 					System.out.println("ERROR: workstealer failed to sleep");
 					e.printStackTrace();

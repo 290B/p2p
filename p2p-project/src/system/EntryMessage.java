@@ -1,18 +1,18 @@
 package system;
 
-import java.rmi.RemoteException;
+import java.util.UUID;
 
 public class EntryMessage extends Message{
 	private static final long serialVersionUID = 1L;
 	private Peer newPeer;
-	EntryMessage(Peer peer){
+	private UUID id;
+	EntryMessage(UUID id, Peer peer){
 		this.newPeer = peer;
+		this.id = id;
 	}
 	
 	public void action(PeerImpl peer) {
-		if (!peer.peers.contains(newPeer)){
-			peer.peers.add(newPeer);
-			System.out.println("A new peer connected");
-		}
+			peer.addPeer(id, newPeer);
+			System.out.println("New peer added");
 	}
 }

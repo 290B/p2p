@@ -1,8 +1,4 @@
 package system;
-
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-
 public class Executor extends Thread{
 	PeerImpl peer;
 	String taskID;
@@ -35,7 +31,7 @@ public class Executor extends Thread{
 				peer.composeTasksCreated++;
 				int spawned_counter = 0;
 				for (Task temp : t.spawned){
-					temp.creator = (Peer)peer;
+					temp.creator = peer.peerID;
 					temp.ID = t.ID + "-" + String.valueOf(spawned_counter+1);
 					temp.returnID = next_id;
 					temp.returnArgumentNumber = spawned_counter;

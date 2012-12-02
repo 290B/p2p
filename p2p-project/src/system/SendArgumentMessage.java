@@ -1,13 +1,11 @@
 package system;
 
 public class SendArgumentMessage extends Message{
-	private static final long serialVersionUID = 1L;
-	Peer peer; 
+	private static final long serialVersionUID = 1L; 
 	String ID;
 	Object returnValue;
 	int returnArgumentNumner;
-	public SendArgumentMessage(Peer peer, String ID, Object returnValue, int returnArgumentNumner){
-		this.peer = peer;
+	public SendArgumentMessage(String ID, Object returnValue, int returnArgumentNumner){
 		this.ID = ID;
 		this.returnValue = returnValue;
 		this.returnArgumentNumner = returnArgumentNumner;

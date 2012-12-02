@@ -1,7 +1,5 @@
 package system;
 
-import java.rmi.RemoteException;
-
 import system.Task.Shared;
 
 public class SetSharedVarMessage extends Message{
@@ -12,7 +10,7 @@ public class SetSharedVarMessage extends Message{
 	}
 
 	public void action(PeerImpl peer) {
-		System.out.println("Recieved shared variable");
+		System.out.println("Got remote shared object");
 		peer.setSharedFromRemote(shared);
 	}
 }

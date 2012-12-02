@@ -1,14 +1,15 @@
 package system;
+
+import java.util.UUID;
+
 public class DisconnectedMessage extends Message{
 	private static final long serialVersionUID = 1L;
-	private Peer disconnectedPeer;
+	private UUID disconnectedPeer;
 	
-	public DisconnectedMessage(Peer peer){
-		this.disconnectedPeer = peer;
+	public DisconnectedMessage(UUID id){
+		this.disconnectedPeer = id;
 	}
 	public void action(PeerImpl peer) {
-		if (peer.peers.contains(disconnectedPeer)){
-			peer.peers.remove(disconnectedPeer);
-		}
+			peer.removePeer(disconnectedPeer);
 	}
 }
