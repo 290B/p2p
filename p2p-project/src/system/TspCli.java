@@ -15,7 +15,7 @@ public class TspCli extends Thread{
 	
 	private static final int N_PIXELS = 512;
 
-	private static final int whichLevelToSplitAt = 3;
+	private static final int whichLevelToSplitAt = 5;
 
 	private static double[][] towns =
 //		{

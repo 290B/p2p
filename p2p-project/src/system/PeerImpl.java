@@ -328,7 +328,7 @@ public class PeerImpl implements Peer {
 		
 		public void run(){
 			while (true){
-				if (peer.readyQ.size() < 2){
+				if (peer.readyQ.size() < 4){
 					Message msg = new GetTaskMessage((Peer)peer);
 					UUID temp = peer.randomPeer();
 					if (temp!=peer.peerID){
