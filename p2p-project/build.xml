@@ -30,9 +30,9 @@
   	    </input>
   	<java classname="system.PeerImpl" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
-  	  <arg value="${initport}"/>
+  	  <arg value="${initPort}"/>
   	  <arg value="${remoteaddress}"/>
-  	  <arg value="${initport}"/>
+  	  <arg value="${initPort}"/>
   	  <classpath>
   	    <pathelement location="build/"/>
   	  </classpath>
