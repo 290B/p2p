@@ -28,7 +28,7 @@
   <target name="peer" depends="compile" description="Start a peer" >
   	<input message="Type in a remote peer address:" addproperty="remoteaddress">
   	    </input>
-  	<java classname="system.PeerImpl" fork="true">
+  	<java classname="system.PeerImpl" fork="false">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <arg value="${initPort}"/>
   	  <arg value="${remoteaddress}"/>
