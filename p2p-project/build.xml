@@ -26,7 +26,7 @@
   </target>
   
   <target name="peer" depends="compile" description="Start a peer" >
-  	<java classname="system.PeerImpl" fork="true">
+  	<java classname="system.PeerImpl" fork="false">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <classpath>
   	    <pathelement location="build/"/>

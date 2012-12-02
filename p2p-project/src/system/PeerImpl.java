@@ -102,7 +102,7 @@ public class PeerImpl implements Peer {
 			workStealer.start();
 			
 			UI ui = peer.new UI();
-			ui.start();
+			ui.run();
 		} catch (RemoteException e) {
 			System.out.println("ERROR: Peer.main()\n");
 			e.printStackTrace();
