@@ -26,18 +26,19 @@
   </target>
   
   <target name="peer" depends="compile" description="Start a peer" >
+  	<input message="Type in a remote peer address:" addproperty="remoteaddress">
   	<java classname="system.PeerImpl" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
-  	  <arg value="${localPort}"/>
-  	  <arg value="${initPeer}"/>
-  	  <arg value="${initPort}"/>
+  	  <arg value="${initport}"/>
+  	  <arg value="${remoteaddress}"/>
+  	  <arg value="${initport}"/>
   	  <classpath>
   	    <pathelement location="build/"/>
   	  </classpath>
   	</java>
   </target>  
   
-  <target name="peerport" depends="compile" description="Start a peer" >
+  <target name="localpeer" depends="compile" description="Start a peer" >
   	<input message="enter port number:" addproperty="customport">
 	</input>
   	<java classname="system.PeerImpl" fork="true">
@@ -51,7 +52,7 @@
   	</java>
   </target>
   
-  <target name="firstPeer" depends="compile" description="Start a peer" >
+  <target name="initpeer" depends="compile" description="Start a peer" >
   	<java classname="system.PeerImpl" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <arg value="${initPort}"/>

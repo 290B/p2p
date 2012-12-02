@@ -109,61 +109,61 @@ public class PeerImpl implements Peer {
 	public class UI extends Thread{
 		public UI(){}
 		public void run(){
-			System.out.println("starting tsp");
-			TspCli client = new TspCli(peer);
-			client.start();
+			//System.out.println("starting tsp");
+			//TspCli client = new TspCli(peer);
+			//client.start();
 			while(true){
-//				
-//				System.out.println("Options: exit, terminate, size, hello, mandelbrot, random, readyQ, waitMap");
-//				try {
-//					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//			        String input = br.readLine();
-//					if (input.equals("exit")){
-//						System.exit(0);
-//					}
-//					if (input.equals("size")){
-//						System.out.println("Number of nodes is: " +  peers.size());
-//					}
-//					if (input.equals("terminate")){
-//						Message msg = new TerminateMessage();
-//						msg.broadcast(peer, false);
-//						System.exit(0);
-//					}
-//					if (input.equals("hello")){
-//						Message msg = new HelloMessage();
-//						msg.broadcast(peer, false);
-//					}
-//					if (input.equals("mandelbrot")){
-//						MandelbrotClient client = new MandelbrotClient(peer, "mandelbrot");
-//						client.start();
-//					}
-//					
-//					if (input.equals("tsp")){
-//						TspCli client = new TspCli(peer);
-//						client.start();
-//					}
-//					
-//					if (input.equals("fib")){
-//						FibClient client = new FibClient(peer);
-//						client.start();
-//					}
-//					
-//					if (input.equals("readyQ")){
-//							System.out.println("The size of readyQ is : " +  readyQ.size());
-//					}
-//					if (input.equals("waitMap")){
-//						System.out.println("The size of waitMap is : " +  waitMap.size());
-//					}
-//					if (input.equals("executed")){
-//						System.out.println("The number of tasks executed is : " +  taskExcecuted);
-//					}
-//					if (input.equals("compose")){
-//						System.out.println("The number of compose tasks created is : " +  composeTasksCreated);
-//					}
-//				} catch (IOException e) {
-//					System.out.println("ERROR: UI.run()");
-//					e.printStackTrace();
-//				}
+				
+				System.out.println("Options: exit, terminate, size, hello, mandelbrot, random, readyQ, waitMap");
+				try {
+					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			        String input = br.readLine();
+					if (input.equals("exit")){
+						System.exit(0);
+					}
+					if (input.equals("size")){
+						System.out.println("Number of nodes is: " +  peers.size());
+					}
+					if (input.equals("terminate")){
+						Message msg = new TerminateMessage();
+						msg.broadcast(peer, false);
+						System.exit(0);
+					}
+					if (input.equals("hello")){
+						Message msg = new HelloMessage();
+						msg.broadcast(peer, false);
+					}
+					if (input.equals("mandelbrot")){
+						MandelbrotClient client = new MandelbrotClient(peer, "mandelbrot");
+						client.start();
+					}
+					
+					if (input.equals("tsp")){
+						TspCli client = new TspCli(peer);
+						client.start();
+					}
+					
+					if (input.equals("fib")){
+						FibClient client = new FibClient(peer);
+						client.start();
+					}
+					
+					if (input.equals("readyQ")){
+							System.out.println("The size of readyQ is : " +  readyQ.size());
+					}
+					if (input.equals("waitMap")){
+						System.out.println("The size of waitMap is : " +  waitMap.size());
+					}
+					if (input.equals("executed")){
+						System.out.println("The number of tasks executed is : " +  taskExcecuted);
+					}
+					if (input.equals("compose")){
+						System.out.println("The number of compose tasks created is : " +  composeTasksCreated);
+					}
+				} catch (IOException e) {
+					System.out.println("ERROR: UI.run()");
+					e.printStackTrace();
+				}
 			}
 		}
 	}

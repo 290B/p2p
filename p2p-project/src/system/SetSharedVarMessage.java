@@ -12,6 +12,7 @@ public class SetSharedVarMessage extends Message{
 	}
 
 	public void action(PeerImpl peer) {
+		System.out.println("Recieved shared variable");
 		peer.setSharedFromRemote(shared);
 	}
 }
