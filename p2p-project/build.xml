@@ -26,42 +26,13 @@
   </target>
   
   <target name="peer" depends="compile" description="Start a peer" >
-  	<input message="Type in a remote peer address:" addproperty="remoteaddress">
-  	    </input>
-  	<java classname="system.PeerImpl" fork="false">
-  	  <jvmarg value="-Djava.security.policy=policy"/>
-  	  <arg value="${initPort}"/>
-  	  <arg value="${remoteaddress}"/>
-  	  <arg value="${initPort}"/>
-  	  <classpath>
-  	    <pathelement location="build/"/>
-  	  </classpath>
-  	</java>
-  </target>  
-  
-  <target name="localpeer" depends="compile" description="Start a peer" >
-  	<input message="enter port number:" addproperty="customport">
-	</input>
   	<java classname="system.PeerImpl" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
-  	  <arg value="${customport}"/>
-  	  <arg value="${initPeer}"/>
-  	  <arg value="${initPort}"/>
   	  <classpath>
   	    <pathelement location="build/"/>
   	  </classpath>
   	</java>
-  </target>
-  
-  <target name="initpeer" depends="compile" description="Start a peer" >
-  	<java classname="system.PeerImpl" fork="true">
-  	  <jvmarg value="-Djava.security.policy=policy"/>
-  	  <arg value="${initPort}"/>
-  	  <classpath>
-  	    <pathelement location="build/"/>
-  	  </classpath>
-  	</java>
-  </target>  
+  </target>   
     
   <target name="clean" description="clean up" >
     <!-- Delete the ${build} and ${dist} directory trees -->

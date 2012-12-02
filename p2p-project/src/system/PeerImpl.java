@@ -34,26 +34,55 @@ public class PeerImpl implements Peer {
 	public int composeTasksCreated = 0;
 	
 	public static void main(String[] args) {
-		if (args.length == 0){
-			System.out.println("Missing initPeer argument");
-			return;
-		}
 		
 		try {
 			if (System.getSecurityManager() == null ) { 
 				System.setSecurityManager(new java.rmi.RMISecurityManager() ); 
 			}
+			// Read user input:
+			String remotePeer;
+			int remotePort;
+			int localPort;
+			
+			
+	        System.out.println("Type in hostname of remote peer: ");
+	        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	        String input = br.readLine();
+	        
+	        if (!input.equals("")){
+
+		        remotePeer = input;	
+	        }else{
+	        	remotePeer = "localhost";
+	        }
+	        System.out.println("Type in remote port: ");
+	        input = br.readLine();
+	        if (!input.equals("")){
+
+		        remotePort = Integer.parseInt(input);	
+	        }else{
+	        	remotePort = 1099;
+	        }
+	        System.out.println("Type in local port: ");
+	        input = br.readLine();
+	        if (!input.equals("")){
+
+		        localPort = Integer.parseInt(input);	
+	        }else{
+	        	localPort = 1099;
+	        }
+			
 			
 			// ------------------------------------ Starting RMI server. Portnumber is arg[0] -----------------------
 			peer = new PeerImpl();
 			Peer stub = (Peer)UnicastRemoteObject.exportObject((Peer)peer, 0);
-			Registry registry = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
+			Registry registry = LocateRegistry.createRegistry(localPort);
 			registry.rebind("Peer", stub);
 			peer.peers.add((Peer)peer);
 			
 			//-------------------------------------- Connecting to initPeer. Address is args[1], port is args[2] --------------------------------
-			if (args.length > 2){
-				Registry remoteRegistry = LocateRegistry.getRegistry(args[1], Integer.parseInt(args[2]));
+			if (!remotePeer.equals("none")){
+				Registry remoteRegistry = LocateRegistry.getRegistry(remotePeer, remotePort);
 	    		Peer initPeer  = (Peer) remoteRegistry.lookup("Peer");
 	    		peer.peers = new ArrayList<Peer>(initPeer.getPeers());
 	    		peer.peers.add((Peer)peer);
@@ -79,6 +108,8 @@ public class PeerImpl implements Peer {
 			e.printStackTrace();
 		} catch (NotBoundException e) {
 			System.out.println("ERROR: Peer.main()\n");
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
