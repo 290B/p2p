@@ -14,6 +14,7 @@ public class TaskCompletedMessage extends Message{
 			temp.getValue().taskMap.clear();
 			temp.getValue().waitMap.clear();
 		} 
+		peer.shared = null;
 		System.out.println("Task completed");
 		
 	}

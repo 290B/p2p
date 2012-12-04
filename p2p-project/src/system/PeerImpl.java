@@ -24,7 +24,7 @@ public class PeerImpl implements Peer {
 	
 	static final BlockingDeque<Message> messages = new LinkedBlockingDeque<Message>();
 	//public ArrayList<Peer> peers = new ArrayList<Peer>();
-	private Shared shared = null;
+	public Shared shared = null;
 	UUID peerID;
 	public ArrayList<UUID> keys = new ArrayList<UUID>();
 	public Map<UUID, Peer> peerMap = new ConcurrentHashMap<UUID , Peer>();
