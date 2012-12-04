@@ -14,8 +14,9 @@ public abstract class Message implements Cloneable, Serializable{
 			ArrayList<UUID> disconnected = null;
 			for (UUID temp: sender.keys){
 				try {
-					if (sender.peerID != temp || toSelf)
-					sender.peerMap.get(temp).message((Message)this.clone());
+					if ( !temp.equals(sender.peerID) || toSelf){
+						sender.peerMap.get(temp).message((Message)this.clone());
+					}
 				} catch (RemoteException e) {
 					System.out.println("ERROR Message: unable to broadcast ");
 					if (disconnected == null){

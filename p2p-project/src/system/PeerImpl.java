@@ -28,6 +28,8 @@ public class PeerImpl implements Peer {
 	UUID peerID;
 	public ArrayList<UUID> keys = new ArrayList<UUID>();
 	public Map<UUID, Peer> peerMap = new ConcurrentHashMap<UUID , Peer>();
+	public UUID first_partner;
+	public UUID second_partner;
 	
 	
 	// Compute stuff: 
@@ -95,7 +97,10 @@ public class PeerImpl implements Peer {
 	    		msg.broadcast(peer, false);
 			}else{
 			
+			
 			}
+			GetPartner gp = peer.new GetPartner();
+			gp.start();
 			
 			MessageProxy messageProxy = peer.new MessageProxy();
 			messageProxy.start();
@@ -143,12 +148,15 @@ public class PeerImpl implements Peer {
 		public void run(){
 			while(true){
 				
-				System.out.println("Options: exit, terminate, size, hello, mandelbrot, random, readyQ, waitMap");
+				System.out.println("Options: id, exit, terminate, size, hello, mandelbrot, random, readyQ, waitMap");
 				try {
 					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			        String input = br.readLine();
 					if (input.equals("exit")){
 						System.exit(0);
+					}
+					if (input.equals("id")){
+						System.out.println("This peer has ID: " + peerID);
 					}
 					if (input.equals("size")){
 						System.out.println("Number of nodes is: " +  peerMap.size());
@@ -384,6 +392,35 @@ public class PeerImpl implements Peer {
 			e.printStackTrace();
 			System.exit(0);
 		}
+	}
+	
+	public class GetPartner extends Thread{
+		public GetPartner(){
+			
+		}
+		public void run(){
+			if (peerMap.size() > 1){
+				while( first_partner == null){
+					Message msg = new GetPartnerMessage(peerID);
+					msg.broadcast(peer, false);
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						System.out.print("Error sleeping in getPartner");
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+	
+	public synchronized boolean registerPartner(UUID id){
+		if (first_partner == null){
+			System.out.println("Got a new partner  " + id);
+			first_partner = id;
+			return true;
+		}
+		return false;
 	}
 }
 
