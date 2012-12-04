@@ -249,6 +249,18 @@ public class PeerImpl implements Peer {
 			putReadyQ(t);
 	}
 	
+	public Task takeTaskExecutor(){
+		Task temp = null;
+		try {
+			temp = readyQ.takeFirst();
+		} catch (InterruptedException e) {
+			System.out.println("Failed to take task from readyQ");
+			e.printStackTrace();
+		}
+	return temp;
+	}
+	
+
 	
 	public Task takeTask(){
 		Task temp = null;

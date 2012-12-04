@@ -13,7 +13,7 @@ public class Executor extends Thread{
 	public void run(){
 		while(true){
 			//System.out.println("Before take task");
-			Task t = peer.takeTask();
+			Task t = peer.takeTaskExecutor();
 			peer.taskExcecuted++;
 			//System.out.print("Executing task... ");
 			
