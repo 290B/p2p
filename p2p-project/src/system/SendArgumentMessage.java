@@ -2,6 +2,8 @@ package system;
 
 import java.rmi.RemoteException;
 
+import system.PeerImpl.GetRemoteQueue;
+
 public class SendArgumentMessage extends Message{
 	private static final long serialVersionUID = 1L; 
 	String ID;
@@ -32,6 +34,8 @@ public class SendArgumentMessage extends Message{
 						peer.remoteQ.removeWaitTask(temp.ID);
 					}
 				} catch (RemoteException e) {
+					GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
+					getRemoteQueue.start();
 					e.printStackTrace();
 				}
 				System.out.println("Task moved from waitMap to readyQ. ID: " + temp.ID);
@@ -41,7 +45,8 @@ public class SendArgumentMessage extends Message{
 		}else{
 			System.out.println("FATAL error! Received argument for task that is not in the waitmap");
 			System.out.println("The task ID was: " + ID);
-			System.exit(0);
+			peer.messageQ(this);
+			//System.exit(0);
 		}
 	}
 }

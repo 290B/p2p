@@ -22,12 +22,16 @@ import system.Task.Shared;
 public class PeerImpl implements Peer {
 	static PeerImpl peer;
 	
-	static final BlockingDeque<Message> messages = new LinkedBlockingDeque<Message>();
+	static final BlockingDeque<Message> messagesIn = new LinkedBlockingDeque<Message>();
+	static final BlockingDeque<Message> messagesOut = new LinkedBlockingDeque<Message>();
 	//public ArrayList<Peer> peers = new ArrayList<Peer>();
 	public Shared shared = null;
 	UUID peerID;
 	public ArrayList<UUID> keys = new ArrayList<UUID>();
 	public Map<UUID, Peer> peerMap = new ConcurrentHashMap<UUID , Peer>();
+	
+	public Map<UUID, UUID> translations = new ConcurrentHashMap<UUID, UUID>();
+	
 	
 	
 	public RemoteQueue remoteQ;
@@ -103,7 +107,7 @@ public class PeerImpl implements Peer {
 			getRemoteQueue.start();
 			
 			
-			MessageProxy messageProxy = peer.new MessageProxy();
+			MessageInProxy messageProxy = peer.new MessageInProxy();
 			messageProxy.start();
 
 			Executor executor = new Executor(peer);
@@ -127,7 +131,11 @@ public class PeerImpl implements Peer {
 
 	// ----------------------------------------Message system-----------------------------------
  	public void message(Message msg) throws RemoteException{
-		messages.add(msg);
+		messagesIn.add(msg);
+	}
+ 	
+ 	public void messageQ(Message msg){
+		messagesIn.add(msg);
 	}
 	
  		
@@ -243,6 +251,8 @@ public class PeerImpl implements Peer {
 			try {
 				remoteQ.putWaitTask(task);
 			} catch (RemoteException e) {
+				GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
+				getRemoteQueue.start();
 				System.out.println("ERROR: Could not send waitTask to remoteQ");
 			}
 		}
@@ -254,6 +264,8 @@ public class PeerImpl implements Peer {
 			try {
 				remoteQ.putTask(t);
 			} catch (RemoteException e) {
+				GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
+				getRemoteQueue.start();
 				System.out.println("ERROR: Could not send task to remoteQ");
 			}
 		}
@@ -299,9 +311,16 @@ public class PeerImpl implements Peer {
 		this.peerMap.putAll(peerMap);
 	}
 	
-	public void placeArgument(UUID receiver, String ID, Object returnValue, int returnArgumentNumber){
+	public boolean placeArgument(UUID receiver, String ID, Object returnValue, int returnArgumentNumber){
 		Message msg = new SendArgumentMessage(ID, returnValue, returnArgumentNumber);
-		msg.send(peer, receiver);
+		if (peerMap.containsKey(receiver)){
+			msg.send(peer, receiver);
+			return true;
+		}else if (translations.containsKey(receiver)){ // recursive call
+			return placeArgument(translations.get(receiver), ID, returnValue, returnArgumentNumber);
+		}else{
+			return false;
+		}
 	}
 	
 	public void putResult(Object resultObject){
@@ -323,14 +342,14 @@ public class PeerImpl implements Peer {
 		
 	}
 	
-	public class MessageProxy extends Thread{
-		public MessageProxy(){}
+	public class MessageInProxy extends Thread{
+		public MessageInProxy(){}
 		
 		public void run(){
 			while(true){
 				Message msg;
 				try {
-					msg = messages.take();
+					msg = messagesIn.take();
 					msg.action(peer);
 				} catch (InterruptedException e) {
 					System.out.println("ERROR: MessageProxy()");
@@ -339,6 +358,22 @@ public class PeerImpl implements Peer {
 			}
 		}
 	}
+	public class MessageOutProxy extends Thread{
+		public MessageOutProxy(){}
+		
+		public void run(){
+			while(true){
+				Message msg;
+				try {
+					msg = messagesOut.take();
+				} catch (InterruptedException e) {
+					System.out.println("ERROR: MessageProxy()");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	
 	public class WorkStealer extends Thread{
 		public WorkStealer(){}

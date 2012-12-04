@@ -10,11 +10,10 @@ public class FibClient extends Thread {
 	}
 	
 	public void run(){
-		FibTask fibTask = new FibTask();
-		FibTask.Fib fib = fibTask.new Fib(20);
+		
 
 		
-		int tries = 1;
+		int tries = 20;
     	int doesntCount = 0;
 		int total = 0;	    	
 		
@@ -22,9 +21,16 @@ public class FibClient extends Thread {
 		
 		for (int i = 0; i < tries; i++){
 			long start = System.currentTimeMillis();
-
+			FibTask fibTask = new FibTask();
+			FibTask.Fib fib = fibTask.new Fib(20);
     		peer.putTask(fib);
     		result = (Integer) peer.getResult();
+    		try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     		
 			long stop = System.currentTimeMillis();
 			System.out.println("mandel, " + (i+1) +" try: " +(stop-start) +" milliseconds");

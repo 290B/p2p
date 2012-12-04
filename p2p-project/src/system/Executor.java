@@ -2,6 +2,8 @@ package system;
 
 import java.rmi.RemoteException;
 
+import system.PeerImpl.GetRemoteQueue;
+
 public class Executor extends Thread{
 	PeerImpl peer;
 	String taskID;
@@ -43,13 +45,22 @@ public class Executor extends Thread{
 				}
 			}
 			if (t.send_argument != null){
-				peer.placeArgument(t.creator , t.returnID, t.send_argument, t.returnArgumentNumber);
+				while(!peer.placeArgument(t.creator , t.returnID, t.send_argument, t.returnArgumentNumber)){
+					try {
+						System.out.println("Nowhere to send argument!");
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 			try {
 				if (peer.remoteQ != null){
 					peer.remoteQ.removeTask(t.ID);
 				}
 			} catch (RemoteException e) {
+				GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
+				getRemoteQueue.start();
 				e.printStackTrace();
 			}
 		}

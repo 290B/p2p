@@ -22,6 +22,8 @@ public class DisconnectedMessage extends Message{
 				for (Map.Entry<String, Task> temp : rq.waitMap.entrySet()){
 					peer.putWaitMap(temp.getValue());
 				}
+				Message msg = new SendTranslationMessage(disconnectedPeer, peer.peerID);
+				msg.broadcast(peer, true);
 				// TODO Broadcast that compose tasks have changed owner. 
 			}
 			if (peer.remoteQ != null){
