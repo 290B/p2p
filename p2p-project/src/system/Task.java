@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 
-public abstract class Task implements Serializable {
+public abstract class Task implements Serializable , Cloneable {
 	private static final long serialVersionUID = 1L;
 	public String ID;  // format : 0-2-5-3-10-19....    The id is unique and describes the tree
 	public String returnID;
@@ -21,6 +21,14 @@ public abstract class Task implements Serializable {
 	
 	
 	public Task(){}
+	
+	public Task clone() {
+	try
+	{
+		return (Task) super.clone();
+	}
+		catch(Exception e){ return null; }
+	}
 	
 	abstract public void execute();
 	

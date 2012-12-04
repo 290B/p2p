@@ -60,8 +60,9 @@ public class Executor extends Thread{
 					}
 				}
 			} catch (RemoteException e) {
+				System.out.println("unable to remove task from remote queue");
 				peer.hasDisconnected(peer.remoteQueueHost);
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}

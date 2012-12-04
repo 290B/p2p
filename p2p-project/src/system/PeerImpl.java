@@ -168,6 +168,8 @@ public class PeerImpl implements Peer {
 					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			        String input = br.readLine();
 					if (input.equals("exit")){
+						System.out.println("The size of readyQ is : " +  readyQ.size());
+						System.out.println("The size of waitMap is : " +  waitMap.size());
 						System.exit(0);
 					}
 					if (input.equals("id")){
@@ -274,7 +276,7 @@ public class PeerImpl implements Peer {
 		if(remoteQ != null){
 			if (peerMap.containsKey(remoteQueueHost)){
 				try {
-					remoteQ.putWaitTask(task);
+					remoteQ.putWaitTask(task.clone());
 				} catch (RemoteException e) {
 					hasDisconnected(remoteQueueHost);
 					System.out.println("ERROR: Could not send waitTask to remoteQ");
@@ -288,7 +290,7 @@ public class PeerImpl implements Peer {
 		if (remoteQ != null){
 			if (peerMap.containsKey(remoteQueueHost)){
 				try {
-					remoteQ.putTask(t);
+					remoteQ.putTask(t.clone());
 				} catch (RemoteException e) {
 					hasDisconnected(remoteQueueHost);
 					System.out.println("ERROR: Could not send task to remoteQ");
@@ -342,8 +344,7 @@ public class PeerImpl implements Peer {
 	public boolean placeArgument(UUID receiver, String ID, Object returnValue, int returnArgumentNumber){
 		Message msg = new SendArgumentMessage(ID, returnValue, returnArgumentNumber);
 		if (peerMap.containsKey(receiver)){
-			msg.send(peer, receiver);
-			return true;
+			return msg.send(peer, receiver);
 		}else if (translations.containsKey(receiver)){ // recursive call
 			return placeArgument(translations.get(receiver), ID, returnValue, returnArgumentNumber);
 		}else{

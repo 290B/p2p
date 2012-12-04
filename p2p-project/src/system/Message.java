@@ -37,16 +37,20 @@ public abstract class Message implements Cloneable, Serializable{
 				}
 			}
 	};
-	public void send(PeerImpl sender, UUID receiver){
+	public boolean send(PeerImpl sender, UUID receiver){
 		try {
 			sender.peerMap.get(receiver).message((Message)this.clone());
+			return true;
 		} catch (RemoteException e) {
 			System.out.println("Failed to contact peer");
 			sender.removePeer(receiver);
 			sender.hasDisconnected(receiver);
+			return false;
 		} catch (CloneNotSupportedException e) {
+			
 			System.out.println("ERROR Message: unable to clone message");
 			e.printStackTrace();
+			return false;
 		}
 	}
 }
