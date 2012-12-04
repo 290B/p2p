@@ -2,17 +2,15 @@ package system;
 
 import java.rmi.RemoteException;
 
-import system.PeerImpl.GetRemoteQueue;
-
 public class SendArgumentMessage extends Message{
 	private static final long serialVersionUID = 1L; 
 	String ID;
 	Object returnValue;
-	int returnArgumentNumner;
-	public SendArgumentMessage(String ID, Object returnValue, int returnArgumentNumner){
+	int returnArgumentNumber;
+	public SendArgumentMessage(String ID, Object returnValue, int returnArgumentNumber){
 		this.ID = ID;
 		this.returnValue = returnValue;
-		this.returnArgumentNumner = returnArgumentNumner;
+		this.returnArgumentNumber = returnArgumentNumber;
 	}
 	
 	public void action(PeerImpl peer) {
@@ -25,20 +23,21 @@ public class SendArgumentMessage extends Message{
 		}
 		if (peer.waitMap.containsKey(ID)){
 			Task temp = peer.waitMap.remove(ID);
-			temp.args[returnArgumentNumner] =  returnValue;
+			temp.args[returnArgumentNumber] =  returnValue;
 			temp.joinCounter--;
 			if (temp.joinCounter <= 0){
 				peer.putReadyQ(temp);
-				try {
-					if (peer.remoteQ != null){
-						peer.remoteQ.removeWaitTask(temp.ID);
+				if (peer.remoteQ != null){
+					if (peer.peerMap.containsKey(peer.remoteQueueHost)){
+						try {
+							peer.remoteQ.removeWaitTask(temp.ID);
+						} catch (RemoteException e) {
+							peer.hasDisconnected(peer.remoteQueueHost);
+							e.printStackTrace();
+						}
 					}
-				} catch (RemoteException e) {
-					GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
-					getRemoteQueue.start();
-					e.printStackTrace();
 				}
-				System.out.println("Task moved from waitMap to readyQ. ID: " + temp.ID);
+				//System.out.println("Task moved from waitMap to readyQ. ID: " + temp.ID);
 			}else{
 				peer.waitMap.put(ID, temp);
 			}

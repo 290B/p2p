@@ -1,27 +1,30 @@
 package system;
 
 import java.rmi.RemoteException;
+import java.util.UUID;
 
 
 // TODO: create a message for returning tasks
 public class GetTaskMessage extends Message {
-	Peer sender;
+	UUID sender;
 	
 	private static final long serialVersionUID = 1L;
 
-	public GetTaskMessage(Peer sender){
+	public GetTaskMessage(UUID sender){
 		this.sender = sender;
 	}
 	public void action(PeerImpl peer) {
-		if (peer.readyQ.size() > 2){
-			Task task = peer.takeTask();
-			if (task != null){
-				try {
-					sender.giveTask(task);
-				} catch (RemoteException e) {
-					peer.putReadyQ(task);
-					System.out.println("Failed to give task");
-					e.printStackTrace();
+		if (peer.peerMap.containsKey(sender)){
+			if (peer.readyQ.size() > 2){
+				Task task = peer.takeTask();
+				if (task != null){
+					try { 
+						peer.peerMap.get(sender).giveTask(task);
+					} catch (RemoteException e) {
+						peer.putReadyQ(task);
+						System.out.println("Failed to give task");
+						e.printStackTrace();
+					}
 				}
 			}
 		}

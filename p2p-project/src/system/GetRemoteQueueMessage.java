@@ -18,7 +18,7 @@ public class GetRemoteQueueMessage extends Message {
 				RemoteQueue stub = (RemoteQueue) UnicastRemoteObject.exportObject((RemoteQueue)rq, 0);
 				if(peer.peerMap.get(sender).registerQueue(stub, peer.peerID)){
 					peer.hostedQueues.put(sender, rq);
-				};
+				}
 			} catch (RemoteException e) {
 				System.out.println("Error while registering remote queue");
 				e.printStackTrace();

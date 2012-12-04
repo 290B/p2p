@@ -13,7 +13,7 @@ public class FibClient extends Thread {
 		
 
 		
-		int tries = 20;
+		int tries = 1;
     	int doesntCount = 0;
 		int total = 0;	    	
 		

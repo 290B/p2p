@@ -2,7 +2,6 @@ package system;
 
 import java.rmi.RemoteException;
 
-import system.PeerImpl.GetRemoteQueue;
 
 public class Executor extends Thread{
 	PeerImpl peer;
@@ -56,11 +55,12 @@ public class Executor extends Thread{
 			}
 			try {
 				if (peer.remoteQ != null){
-					peer.remoteQ.removeTask(t.ID);
+					if (peer.peerMap.containsKey(peer.remoteQueueHost)){
+						peer.remoteQ.removeTask(t.ID);
+					}
 				}
 			} catch (RemoteException e) {
-				GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
-				getRemoteQueue.start();
+				peer.hasDisconnected(peer.remoteQueueHost);
 				e.printStackTrace();
 			}
 		}

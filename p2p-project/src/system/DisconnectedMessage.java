@@ -15,16 +15,16 @@ public class DisconnectedMessage extends Message{
 	public void action(PeerImpl peer) {
 			peer.removePeer(disconnectedPeer);
 			if (peer.hostedQueues.containsKey(disconnectedPeer)){
-				RemoteQueueImpl rq = peer.hostedQueues.get(disconnectedPeer);
-				for (Map.Entry<String, Task> temp : rq.taskMap.entrySet()){
-					peer.putReadyQ(temp.getValue());
-				}
-				for (Map.Entry<String, Task> temp : rq.waitMap.entrySet()){
-					peer.putWaitMap(temp.getValue());
-				}
+				RemoteQueueImpl rq = peer.hostedQueues.remove(disconnectedPeer);
+//				for (Map.Entry<String, Task> temp : rq.taskMap.entrySet()){
+//					peer.putReadyQ(temp.getValue());
+//				}
+//				for (Map.Entry<String, Task> temp : rq.waitMap.entrySet()){
+//					peer.putWaitMap(temp.getValue());
+//				}
+				System.out.println("Sending translation message");
 				Message msg = new SendTranslationMessage(disconnectedPeer, peer.peerID);
-				msg.broadcast(peer, true);
-				// TODO Broadcast that compose tasks have changed owner. 
+				msg.broadcast(peer, true); 
 			}
 			if (peer.remoteQ != null){
 				if (peer.remoteQueueHost.equals(disconnectedPeer)){

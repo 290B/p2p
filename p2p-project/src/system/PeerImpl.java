@@ -30,6 +30,8 @@ public class PeerImpl implements Peer {
 	public ArrayList<UUID> keys = new ArrayList<UUID>();
 	public Map<UUID, Peer> peerMap = new ConcurrentHashMap<UUID , Peer>();
 	
+	public int argumentThrownAway = 0;
+	
 	public Map<UUID, UUID> translations = new ConcurrentHashMap<UUID, UUID>();
 	
 	
@@ -109,6 +111,9 @@ public class PeerImpl implements Peer {
 			
 			MessageInProxy messageProxy = peer.new MessageInProxy();
 			messageProxy.start();
+			
+			MessageOutProxy messageOutProxy = peer.new MessageOutProxy();
+			messageOutProxy.start();
 
 			Executor executor = new Executor(peer);
 			executor.start();
@@ -146,7 +151,8 @@ public class PeerImpl implements Peer {
 	
 	public void hasDisconnected(UUID disconnectedPeer){
 		Message msg = new DisconnectedMessage(disconnectedPeer);
-		msg.broadcast(this, true);
+		msg.broadcast(this, false);
+		msg.action(this);
 	}
 	
 	
@@ -170,6 +176,9 @@ public class PeerImpl implements Peer {
 					if (input.equals("size")){
 						System.out.println("Number of nodes is: " +  peerMap.size());
 					}
+					if (input.equals("keys")){
+						System.out.println("The size of keys is: " +  keys.size());
+					}
 					if (input.equals("terminate")){
 						Message msg = new TerminateMessage();
 						msg.broadcast(peer, false);
@@ -177,7 +186,7 @@ public class PeerImpl implements Peer {
 					}
 					if (input.equals("hello")){
 						Message msg = new HelloMessage();
-						msg.broadcast(peer, false);
+						msg.broadcast(peer, true);
 					}
 					if (input.equals("mandelbrot")){
 						MandelbrotClient client = new MandelbrotClient(peer, "mandelbrot");
@@ -205,6 +214,9 @@ public class PeerImpl implements Peer {
 					}
 					if (input.equals("compose")){
 						System.out.println("The number of compose tasks created is : " +  composeTasksCreated);
+					}
+					if(input.equals("arg")){
+						System.out.println(argumentThrownAway);
 					}
 				} catch (IOException e) {
 					System.out.println("ERROR: UI.run()");
@@ -237,23 +249,36 @@ public class PeerImpl implements Peer {
 	
 	
 	public Task takeTask(){
+		Task temp = null;
 		try {
-			return readyQ.takeFirst();
+			temp = readyQ.takeFirst();
 		} catch (InterruptedException e) {
 			System.out.println("Failed to take task from readyQ");
 			e.printStackTrace();
 		}
-		return null;
+		try {
+			if (remoteQ != null){
+				if (peerMap.containsKey(remoteQueueHost)){
+					remoteQ.removeTask(temp.ID);
+				}
+			}
+		} catch (RemoteException e) {
+			peer.hasDisconnected(peer.remoteQueueHost);
+			e.printStackTrace();
+		}
+		
+		return temp;
 	};
 	
 	public void putWaitMap(Task task){
-		if (remoteQ != null){
-			try {
-				remoteQ.putWaitTask(task);
-			} catch (RemoteException e) {
-				GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
-				getRemoteQueue.start();
-				System.out.println("ERROR: Could not send waitTask to remoteQ");
+		if(remoteQ != null){
+			if (peerMap.containsKey(remoteQueueHost)){
+				try {
+					remoteQ.putWaitTask(task);
+				} catch (RemoteException e) {
+					hasDisconnected(remoteQueueHost);
+					System.out.println("ERROR: Could not send waitTask to remoteQ");
+				}
 			}
 		}
 		waitMap.put(task.ID, task);
@@ -261,12 +286,13 @@ public class PeerImpl implements Peer {
 	
 	public void putReadyQ(Task t){
 		if (remoteQ != null){
-			try {
-				remoteQ.putTask(t);
-			} catch (RemoteException e) {
-				GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
-				getRemoteQueue.start();
-				System.out.println("ERROR: Could not send task to remoteQ");
+			if (peerMap.containsKey(remoteQueueHost)){
+				try {
+					remoteQ.putTask(t);
+				} catch (RemoteException e) {
+					hasDisconnected(remoteQueueHost);
+					System.out.println("ERROR: Could not send task to remoteQ");
+				}
 			}
 		}
 		try {
@@ -306,7 +332,9 @@ public class PeerImpl implements Peer {
 	
 	public synchronized void updatePeerMap(Map<UUID, Peer> peerMap){
 		for (Map.Entry<UUID, Peer> entry : peerMap.entrySet()){
-			keys.add(entry.getKey());
+			if (!keys.contains(entry.getKey())){
+					keys.add(entry.getKey());
+			}
 		}
 		this.peerMap.putAll(peerMap);
 	}
@@ -366,6 +394,8 @@ public class PeerImpl implements Peer {
 				Message msg;
 				try {
 					msg = messagesOut.take();
+					argumentThrownAway++;
+					
 				} catch (InterruptedException e) {
 					System.out.println("ERROR: MessageProxy()");
 					e.printStackTrace();
@@ -381,7 +411,7 @@ public class PeerImpl implements Peer {
 		public void run(){
 			while (true){
 				if (peer.readyQ.size() < 4){
-					Message msg = new GetTaskMessage((Peer)peer);
+					Message msg = new GetTaskMessage(peer.peerID);
 					UUID temp = peer.randomPeer();
 					if (temp!=peer.peerID){
 						msg.send(peer, temp);
@@ -415,7 +445,7 @@ public class PeerImpl implements Peer {
 			if (proposedShared.isNewerThan(shared)){
 				shared = proposedShared.clone();
 				SetSharedVarMessage msg = new SetSharedVarMessage(shared);
-				msg.broadcast(peer, false); //TODO is peer self?
+				msg.broadcast(peer, false); 
 			}
 
 		} catch (CloneNotSupportedException e) {
