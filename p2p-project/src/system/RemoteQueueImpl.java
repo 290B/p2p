@@ -24,6 +24,11 @@ public class RemoteQueueImpl implements RemoteQueue{
 	public void removeTask(Task t) throws RemoteException {
 		taskMap.remove(t.ID);
 	}
+	
+	
+	public boolean isEmpty(){
+		return taskMap.isEmpty();
+	}
 
 
 //	public void backup(Map<String, Task> waitMap, BlockingDeque<Task> clonedReadyQ) throws RemoteException {

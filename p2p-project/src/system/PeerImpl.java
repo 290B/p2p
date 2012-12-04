@@ -31,6 +31,7 @@ public class PeerImpl implements Peer {
 	
 	
 	public RemoteQueue remoteQ;
+	public UUID remoteQueueHost;
 	public Map<UUID, RemoteQueueImpl> hostedQueues = new ConcurrentHashMap<UUID , RemoteQueueImpl>();
 	
 	// Compute stuff: 
@@ -412,9 +413,10 @@ public class PeerImpl implements Peer {
 		}
 	}
 
-	synchronized public boolean registerQueue(RemoteQueue rq) throws RemoteException {
+	synchronized public boolean registerQueue(RemoteQueue rq, UUID remoteQueueHost) throws RemoteException {
 		if (remoteQ == null){
 			remoteQ = rq;
+			this.remoteQueueHost = remoteQueueHost;
 			System.out.println("Recieved reference to a remote Queue!");
 			return true;
 		}
