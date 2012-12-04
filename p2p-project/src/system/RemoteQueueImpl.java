@@ -13,16 +13,16 @@ public class RemoteQueueImpl implements RemoteQueue{
 		waitMap.put(t.ID, t);
 	}
 	
-	public void removeWaitTask(Task t) throws RemoteException {
-		waitMap.remove(t.ID);
+	public void removeWaitTask(String id) throws RemoteException {
+		waitMap.remove(id);
 	}
 	
 	public void putTask(Task t) throws RemoteException {
 		taskMap.put(t.ID, t);
 	}
 	
-	public void removeTask(Task t) throws RemoteException {
-		taskMap.remove(t.ID);
+	public void removeTask(String id) throws RemoteException {
+		taskMap.remove(id);
 	}
 	
 	

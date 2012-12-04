@@ -14,11 +14,15 @@ public class GetTaskMessage extends Message {
 	}
 	public void action(PeerImpl peer) {
 		if (peer.readyQ.size() > 2){
-			try {
-				sender.giveTask(peer.takeTask());
-			} catch (RemoteException e) {
-				System.out.println("Failed to give task");
-				e.printStackTrace();
+			Task task = peer.takeTask();
+			if (task != null){
+				try {
+					sender.giveTask(task);
+				} catch (RemoteException e) {
+					peer.putReadyQ(task);
+					System.out.println("Failed to give task");
+					e.printStackTrace();
+				}
 			}
 		}
 	}

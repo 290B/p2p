@@ -1,4 +1,7 @@
 package system;
+
+import java.rmi.RemoteException;
+
 public class Executor extends Thread{
 	PeerImpl peer;
 	String taskID;
@@ -41,6 +44,13 @@ public class Executor extends Thread{
 			}
 			if (t.send_argument != null){
 				peer.placeArgument(t.creator , t.returnID, t.send_argument, t.returnArgumentNumber);
+			}
+			try {
+				if (peer.remoteQ != null){
+					peer.remoteQ.removeTask(t.ID);
+				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
 			}
 		}
 	}

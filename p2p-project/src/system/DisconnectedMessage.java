@@ -24,9 +24,11 @@ public class DisconnectedMessage extends Message{
 				}
 				// TODO Broadcast that compose tasks have changed owner. 
 			}
-			if (peer.remoteQueueHost.equals(disconnectedPeer)){
-				GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
-				getRemoteQueue.start();
+			if (peer.remoteQ != null){
+				if (peer.remoteQueueHost.equals(disconnectedPeer)){
+					GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
+					getRemoteQueue.start();
+				}
 			}
 	}
 }

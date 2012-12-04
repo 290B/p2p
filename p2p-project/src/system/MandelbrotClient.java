@@ -18,12 +18,12 @@ public class MandelbrotClient extends Thread{
 	Peer peer;
 	
 	// Mandelbrot input data
-	int N_PIXELS = 2048;
-	int ITERATION_LIMIT = 4096*4;
+	int N_PIXELS = 1024;
+	int ITERATION_LIMIT = 4096;
 	double CORNER_X = -0.7510975859375;
 	double CORNER_Y = 0.1315680625;
 	double EDGE_LENGTH = 0.01611;
-	int DEPTH = 6;
+	int DEPTH = 2;
 	// ---------------------------------
 	
 	

@@ -1,5 +1,7 @@
 package system;
 
+import java.rmi.RemoteException;
+
 public class SendArgumentMessage extends Message{
 	private static final long serialVersionUID = 1L; 
 	String ID;
@@ -15,8 +17,8 @@ public class SendArgumentMessage extends Message{
 		//System.out.println("Argument recieved to ID: " + ID);
 		if (ID.equals("0")){
 			peer.putResult(returnValue);
-			System.out.println("Task completed");
-			
+			Message msg = new TaskCompletedMessage();
+			msg.broadcast(peer, true);
 			return;
 		}
 		if (peer.waitMap.containsKey(ID)){
@@ -25,6 +27,13 @@ public class SendArgumentMessage extends Message{
 			temp.joinCounter--;
 			if (temp.joinCounter <= 0){
 				peer.putReadyQ(temp);
+				try {
+					if (peer.remoteQ != null){
+						peer.remoteQ.removeWaitTask(temp.ID);
+					}
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
 				System.out.println("Task moved from waitMap to readyQ. ID: " + temp.ID);
 			}else{
 				peer.waitMap.put(ID, temp);

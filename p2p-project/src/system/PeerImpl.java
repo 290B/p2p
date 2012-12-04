@@ -224,12 +224,7 @@ public class PeerImpl implements Peer {
 	}
 	
 	public void giveTask(Task t){
-		try {
-			readyQ.put(t);
-		} catch (InterruptedException e) {
-			System.out.println("Failed to put task");
-			e.printStackTrace();
-		}
+			putReadyQ(t);
 	}
 	
 	
@@ -244,7 +239,30 @@ public class PeerImpl implements Peer {
 	};
 	
 	public void putWaitMap(Task task){
+		if (remoteQ != null){
+			try {
+				remoteQ.putWaitTask(task);
+			} catch (RemoteException e) {
+				System.out.println("ERROR: Could not send waitTask to remoteQ");
+			}
+		}
 		waitMap.put(task.ID, task);
+	}
+	
+	public void putReadyQ(Task t){
+		if (remoteQ != null){
+			try {
+				remoteQ.putTask(t);
+			} catch (RemoteException e) {
+				System.out.println("ERROR: Could not send task to remoteQ");
+			}
+		}
+		try {
+			readyQ.put(t);
+		} catch (InterruptedException e) {
+			System.out.println("ERROR: putRreadyQ");
+			e.printStackTrace();
+		}
 	}
 	
 	public synchronized void addPeer(UUID id, Peer peer){
@@ -253,7 +271,6 @@ public class PeerImpl implements Peer {
 			peerMap.put(id, peer);
 		}
 	}
-	
 	public UUID randomPeer(){
 		Random rnd = new Random();
 		return keys.get(rnd.nextInt(keys.size()));
@@ -285,15 +302,6 @@ public class PeerImpl implements Peer {
 	public void placeArgument(UUID receiver, String ID, Object returnValue, int returnArgumentNumber){
 		Message msg = new SendArgumentMessage(ID, returnValue, returnArgumentNumber);
 		msg.send(peer, receiver);
-	}
-	
-	public void putReadyQ(Task t){
-		try {
-			readyQ.put(t);
-		} catch (InterruptedException e) {
-			System.out.println("ERROR: putRreadyQ");
-			e.printStackTrace();
-		}
 	}
 	
 	public void putResult(Object resultObject){
@@ -398,6 +406,7 @@ public class PeerImpl implements Peer {
 	public class GetRemoteQueue extends Thread{
 		public GetRemoteQueue(){
 			remoteQ = null;
+			remoteQueueHost = null;
 		}
 		public void run(){
 			while(remoteQ == null){
