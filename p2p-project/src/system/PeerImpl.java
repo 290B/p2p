@@ -28,9 +28,10 @@ public class PeerImpl implements Peer {
 	UUID peerID;
 	public ArrayList<UUID> keys = new ArrayList<UUID>();
 	public Map<UUID, Peer> peerMap = new ConcurrentHashMap<UUID , Peer>();
-	public UUID first_partner;
-	public UUID second_partner;
 	
+	
+	public RemoteQueue remoteQ;
+	public Map<UUID, RemoteQueueImpl> hostedQueues = new ConcurrentHashMap<UUID , RemoteQueueImpl>();
 	
 	// Compute stuff: 
 	public Map<String, Task> waitMap = new ConcurrentHashMap<String , Task>();
@@ -57,16 +58,14 @@ public class PeerImpl implements Peer {
 	        String input = br.readLine();
 	        
 	        if (!input.equals("")){
-
-		        remotePeer = input;	
+	        	remotePeer = input;	
 	        }else{
 	        	remotePeer = "localhost";
 	        }
 	        System.out.println("Type in remote port: ");
 	        input = br.readLine();
 	        if (!input.equals("")){
-
-		        remotePort = Integer.parseInt(input);	
+	        	remotePort = Integer.parseInt(input);	
 	        }else{
 	        	remotePort = 1099;
 	        }
@@ -97,10 +96,11 @@ public class PeerImpl implements Peer {
 	    		msg.broadcast(peer, false);
 			}else{
 			
-			
 			}
-			GetPartner gp = peer.new GetPartner();
-			gp.start();
+			
+			GetRemoteQueue getRemoteQueue = peer.new GetRemoteQueue();
+			getRemoteQueue.start();
+			
 			
 			MessageProxy messageProxy = peer.new MessageProxy();
 			messageProxy.start();
@@ -393,31 +393,29 @@ public class PeerImpl implements Peer {
 			System.exit(0);
 		}
 	}
-	
-	public class GetPartner extends Thread{
-		public GetPartner(){
-			
+
+	public class GetRemoteQueue extends Thread{
+		public GetRemoteQueue(){
+			remoteQ = null;
 		}
 		public void run(){
-			if (peerMap.size() > 1){
-				while( first_partner == null){
-					Message msg = new GetPartnerMessage(peerID);
-					msg.broadcast(peer, false);
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						System.out.print("Error sleeping in getPartner");
-						e.printStackTrace();
-					}
+			while(remoteQ == null){
+				Message msg = new GetRemoteQueueMessage(peerID);
+				msg.broadcast(peer, false);
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					System.out.print("Error sleeping in GetRemoteQueue");
+					e.printStackTrace();
 				}
 			}
 		}
 	}
-	
-	public synchronized boolean registerPartner(UUID id){
-		if (first_partner == null){
-			System.out.println("Got a new partner  " + id);
-			first_partner = id;
+
+	synchronized public boolean registerQueue(RemoteQueue rq) throws RemoteException {
+		if (remoteQ == null){
+			remoteQ = rq;
+			System.out.println("Recieved reference to a remote Queue!");
 			return true;
 		}
 		return false;

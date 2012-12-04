@@ -12,6 +12,5 @@ public interface Peer extends Remote {
 	public Object getResult() throws RemoteException;
 	public void message(Message msg) throws RemoteException;
 	public Map<UUID, Peer> getPeerMap() throws RemoteException;
-	public boolean registerPartner(UUID id) throws RemoteException;
-	
+	public boolean registerQueue(RemoteQueue rq) throws RemoteException;
 }
