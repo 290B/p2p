@@ -23,7 +23,7 @@ public class MandelbrotClient extends Thread{
 	double CORNER_X = -0.7510975859375;
 	double CORNER_Y = 0.1315680625;
 	double EDGE_LENGTH = 0.01611;
-	int DEPTH = 2;
+	int DEPTH = 3;
 	// ---------------------------------
 	
 	

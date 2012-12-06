@@ -238,7 +238,7 @@ public class PeerImpl implements Peer {
 			t.ID = "0";
 			t.creator = peerID;
 			readyQ.putFirst(t);
-			System.out.println("New task registered");
+			System.out.println("New job started");
 			
 		} catch (InterruptedException e) {
 			System.out.println("Failed to put first task to readyQ");
@@ -279,7 +279,7 @@ public class PeerImpl implements Peer {
 			}
 		} catch (RemoteException e) {
 			peer.hasDisconnected(peer.remoteQueueHost);
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		return temp;

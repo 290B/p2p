@@ -77,9 +77,6 @@ public class TspCli extends Thread{
 	public void run() {
     	
         try {
-        	
-
-    		System.out.println("Starting TSP job");
     		int tour[] = new int [towns.length];
   
         	tour = runJob (towns,whichLevelToSplitAt);
@@ -115,8 +112,6 @@ public class TspCli extends Thread{
     		//Start in town 0
     		path.add(0);
     		
-    		
-            System.out.println("before new shared");
 
     		
 
@@ -126,8 +121,6 @@ public class TspCli extends Thread{
     			allTowns.add(i);
     		}
 
-    		
-            System.out.println("before new task");
 
     		TspTask.TspInputArg in = tspTask.new TspInputArg(path, distances, 0, allTowns ,levelToSplitAt);
             

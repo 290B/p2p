@@ -77,9 +77,7 @@ public class TspTask implements Serializable{
 
 		  if (path.size() == 1){
 				setShared(findInitialShortPath());
-				System.out.println("Should be less than 30...  :  " + getLeastRemaning(path, allTowns, distances));
-
-			}
+		}
 
 		    if (path.size() < levelToSplitAt){ //The tree is still too big to be computed localy, try to split
 
@@ -293,7 +291,7 @@ public class TspTask implements Serializable{
 			newPath.add(0);
 			//System.out.println(newPath);
 
-			System.out.println("initial distance: "+totalDistance);
+			//System.out.println("initial distance: "+totalDistance);
 
 			//currentBestValues.settSumPathLength(totalDistance);
 			//currentBestValues.setPath(newPath);
