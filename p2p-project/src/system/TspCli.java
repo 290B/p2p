@@ -15,7 +15,7 @@ public class TspCli extends Thread{
 	
 	private static final int N_PIXELS = 512;
 
-	private static final int whichLevelToSplitAt = 5;
+	private static final int whichLevelToSplitAt = 4;
 
 	private static double[][] towns =
 //		{
@@ -66,8 +66,8 @@ public class TspCli extends Thread{
 	{18,11},
 	{18,13},
 	{18,15},
-	{18,17},
-	{18,19},
+	//{18,17},
+	//{18,19},
 	};
     TspCli(Peer peer){
     	this.peer = peer;
@@ -86,7 +86,7 @@ public class TspCli extends Thread{
 
             JLabel euclideanTspLabel = displayEuclideanTspTaskReturnValue( towns, tour );
             JFrame frame = new JFrame( "Result Visualizations" );
-            frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+            frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
             Container container = frame.getContentPane();
             container.setLayout( new BorderLayout() );
             container.add( new JScrollPane( euclideanTspLabel ), BorderLayout.EAST );
@@ -132,10 +132,12 @@ public class TspCli extends Thread{
     		TspTask.TspInputArg in = tspTask.new TspInputArg(path, distances, 0, allTowns ,levelToSplitAt);
             
     		TspTask.TspExplorer tsp = tspTask.new TspExplorer((Object) in);
-
+    		long start = System.currentTimeMillis();
             peer.putTask(tsp);
            	
 			TspReturn results = (TspReturn)peer.getResult();
+			long stop = System.currentTimeMillis();
+			System.out.println("Time: " +(stop-start) +" milliseconds");
            	ArrayList<Integer> ret = results.getPath();    
            	System.out.println("Length of the shortest path is: "+results.getSumPathLength());
            	

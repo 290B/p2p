@@ -8,12 +8,14 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -151,8 +153,8 @@ public class PeerImpl implements Peer {
 	
 	public void hasDisconnected(UUID disconnectedPeer){
 		Message msg = new DisconnectedMessage(disconnectedPeer);
-		msg.broadcast(this, false);
 		msg.action(this);
+		msg.broadcast(this, false);
 	}
 	
 	
@@ -161,9 +163,8 @@ public class PeerImpl implements Peer {
 	public class UI extends Thread{
 		public UI(){}
 		public void run(){
-			while(true){
-				
-				System.out.println("Options: id, exit, terminate, size, hello, mandelbrot, random, readyQ, waitMap");
+			while(true){	
+				//System.out.println("Options: id, exit, terminate, size, hello, mandelbrot, random, readyQ, waitMap");
 				try {
 					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			        String input = br.readLine();
@@ -282,9 +283,9 @@ public class PeerImpl implements Peer {
 		}
 		
 		return temp;
-	};
+	}
 	
-	public void putWaitMap(Task task){
+	synchronized public void putWaitMap(Task task){
 		if(remoteQ != null){
 			if (peerMap.containsKey(remoteQueueHost)){
 				try {
@@ -296,6 +297,20 @@ public class PeerImpl implements Peer {
 			}
 		}
 		waitMap.put(task.ID, task);
+	}
+	
+	public void removeWaitTask(String taskID){
+		try {
+			if (remoteQ != null){
+				if (peerMap.containsKey(remoteQueueHost)){
+					remoteQ.removeWaitTask(taskID);
+				}
+			}
+		} catch (RemoteException e) {
+			peer.hasDisconnected(peer.remoteQueueHost);
+			e.printStackTrace();
+		}
+		waitMap.remove(taskID);
 	}
 	
 	public void putReadyQ(Task t){
@@ -353,7 +368,7 @@ public class PeerImpl implements Peer {
 		this.peerMap.putAll(peerMap);
 	}
 	
-	public boolean placeArgument(UUID receiver, String ID, Object returnValue, int returnArgumentNumber){
+	/*public boolean placeArgument(UUID receiver, String ID, Object returnValue, int returnArgumentNumber){
 		Message msg = new SendArgumentMessage(ID, returnValue, returnArgumentNumber);
 		if (peerMap.containsKey(receiver)){
 			return msg.send(peer, receiver);
@@ -362,6 +377,61 @@ public class PeerImpl implements Peer {
 		}else{
 			return false;
 		}
+	}*/
+	
+	
+	public boolean placeArgument(UUID receiver, String taskID, Object returnValue, int returnArgumentNumber){
+		if (peerMap.containsKey(receiver)){
+			try {
+				return peerMap.get(receiver).returnArgument(taskID, returnValue, returnArgumentNumber);
+			} catch (RemoteException e) {
+				System.out.println("Remote exception when placing argument");
+				hasDisconnected(receiver);
+			}
+		}else if (translations.containsKey(receiver)){ // recursive call
+			return placeArgument(translations.get(receiver), taskID, returnValue, returnArgumentNumber);
+		}
+		return false;
+	}
+	
+	synchronized public boolean returnArgument(String taskID, Object returnValue, int returnArgumentNumber) throws RemoteException{
+		if (taskID.equals("0")){
+			peer.putResult(returnValue);
+			Message msg = new TaskCompletedMessage();
+			msg.broadcast(peer, true);
+			return true;
+		}
+		if (peer.waitMap.containsKey(taskID)){
+			Task temp = peer.waitMap.remove(taskID);
+			temp.args[returnArgumentNumber] =  returnValue;
+			temp.joinCounter--;
+			if (temp.joinCounter <= 0){
+				peer.putReadyQ(temp);
+				if (peer.remoteQ != null){
+					if (peer.peerMap.containsKey(peer.remoteQueueHost)){
+						try {
+							peer.remoteQ.removeWaitTask(taskID);
+						} catch (RemoteException e) {
+							peer.hasDisconnected(peer.remoteQueueHost);
+							e.printStackTrace();
+						}
+					}
+				}
+	//			System.out.println("Task moved from waitMap to readyQ. ID: " + temp.ID);
+				return true;
+				
+			}else{
+				peer.putWaitMap(temp);
+				//peer.waitMap.put(taskID, temp);
+				return true;
+			}
+		}else{
+			System.out.println("FATAL error! Received argument for task that is not in the waitmap");
+			System.out.println("The task ID was: " + taskID);
+			//System.exit(0);
+		}
+		
+		return false;
 	}
 	
 	public void putResult(Object resultObject){

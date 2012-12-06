@@ -30,6 +30,7 @@ public class Executor extends Thread{
 				t.spawn_next.joinCounter = t.spawned.size();
 				t.spawn_next.args = new Object[t.spawned.size()];
 				t.spawn_next.creator = t.creator;//(Peer)peer;
+				//t.spawn_next.creator = peer.peerID;
 				
 				peer.putWaitMap(t.spawn_next);
 				peer.composeTasksCreated++;
@@ -46,9 +47,10 @@ public class Executor extends Thread{
 			if (t.send_argument != null){
 				while(!peer.placeArgument(t.creator , t.returnID, t.send_argument, t.returnArgumentNumber)){
 					try {
-						System.out.println("Nowhere to send argument!");
+						System.out.println("Nowhere to send argument! return.ID is: " + t.returnID);
 						Thread.sleep(10);
 					} catch (InterruptedException e) {
+						System.out.println("ERROR: sleep() failed");
 						e.printStackTrace();
 					}
 				}

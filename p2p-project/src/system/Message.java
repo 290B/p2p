@@ -12,17 +12,19 @@ public abstract class Message implements Cloneable, Serializable{
 	
 	public void broadcast(PeerImpl sender, boolean toSelf){
 			ArrayList<UUID> disconnected = null;
-			for (UUID temp: sender.keys){
+			Object[] temp = sender.keys.toArray();
+			for (int i = 0; i < temp.length; i ++){
+			//for (UUID temp: sender.keys){
 				try {
-					if ( !temp.equals(sender.peerID) || toSelf){
-						sender.peerMap.get(temp).message((Message)this.clone());
+					if ( !temp[i].equals(sender.peerID) || toSelf){
+						sender.peerMap.get(temp[i]).message((Message)this.clone());
 					}
 				} catch (RemoteException e) {
 					System.out.println("ERROR Message: unable to broadcast ");
 					if (disconnected == null){
 						disconnected = new ArrayList<UUID>();
 					}
-					disconnected.add(temp);
+					disconnected.add((UUID) temp[i]);
 					
 					//e.printStackTrace();
 				} catch (CloneNotSupportedException e) {
@@ -43,7 +45,6 @@ public abstract class Message implements Cloneable, Serializable{
 			return true;
 		} catch (RemoteException e) {
 			System.out.println("Failed to contact peer");
-			sender.removePeer(receiver);
 			sender.hasDisconnected(receiver);
 			return false;
 		} catch (CloneNotSupportedException e) {

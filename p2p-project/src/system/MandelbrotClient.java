@@ -37,12 +37,15 @@ public class MandelbrotClient extends Thread{
 		Task split = temp.new Split(CORNER_X, CORNER_Y, EDGE_LENGTH, N_PIXELS, ITERATION_LIMIT, DEPTH);
 		
 		try {
+			long start = System.currentTimeMillis();
 			peer.putTask(split);
 			int [][] count = (int[][]) peer.getResult();
+			long stop = System.currentTimeMillis();
+			System.out.println("Time: " +(stop-start) +" milliseconds");
 			
 			JLabel mandelbrotLabel = displayMandelbrotSetTaskReturnValue( count );
 			JFrame frame = new JFrame( "Result Visualizations" );
-			frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+			frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 			Container container = frame.getContentPane();
 			container.setLayout( new BorderLayout() );
 			container.add( new JScrollPane( mandelbrotLabel ), BorderLayout.WEST );

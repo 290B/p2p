@@ -9,7 +9,13 @@ public class RemoteQueueImpl implements RemoteQueue{
 	public UUID user;
 	public Map<String, Task> waitMap = new ConcurrentHashMap<String , Task>();
 	public Map<String, Task> taskMap = new ConcurrentHashMap<String , Task>();
+	
+	
 	public void putWaitTask(Task t) throws RemoteException {
+		if (waitMap.containsKey(t.ID)){
+			waitMap.remove(t.ID);
+		}
+		
 		waitMap.put(t.ID, t);
 	}
 	
@@ -18,6 +24,9 @@ public class RemoteQueueImpl implements RemoteQueue{
 	}
 	
 	public void putTask(Task t) throws RemoteException {
+		if (taskMap.containsKey(t.ID)){
+			taskMap.remove(t.ID);
+		}
 		taskMap.put(t.ID, t);
 	}
 	
