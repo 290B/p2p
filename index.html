@@ -59,14 +59,13 @@
 
 <p>When we push the number of machines and cores in the network we expect to see better results than from the homework since the space became a bottle neck in the system. The peer to peer network has no such bottle neck and should be able to handle the massive amount of message passing better.</p>
 
-<ul>
-<li>A peers task is backed up in one other peer at all times. When one of those peers fails or disconnects another backup will be made immediately. This task must be reassigned if the computing peer fails. Test by running three peers, repeatedly crash a task which is currently computing a task. Make sure that the task is reassigned and computed correctly.</li>
-</ul><h2>Key Technical Issues</h2>
+<h2>Key Technical Issues</h2>
 
 <ul>
 <li><p>Making the system consistent when faced with failing machines and randomly disconnecting peers</p></li>
 <li><p>Distributing workload as efficiently as possible</p></li>
-<li><p>Getting better performance than a similar space-worker system when the number of machines and cores is large</p></li>
+<li><p>Sharing variables between the peers</p></li>
+<li>
 </ul><h2>Architecture</h2>
 
 <ul>
@@ -82,7 +81,8 @@
 
 <h2>Conclusions [and Future Work]</h2>
 
-<p>TODO</p>
+<p><a href="https://docs.google.com/presentation/d/16m83JV8LcCqfi9ZARdg1_cN7ZgimBz6GvWBRLZE8oLM/edit">Project presentation slides</a>
+TODO</p>
 
 <h2>References</h2>
 
