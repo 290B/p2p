@@ -41,7 +41,7 @@
 
 <h2>Introduction</h2>
 
-<p>A space-worker compute system have one or many centralized spaces. A lot of tasks and data are being send to, from and through these spaces which makes the system vulnerable if one should fail. There are ways to handle a failed space but the process can be complicated. One approach is to let a worker step in as a space and receive a backup state from another space. This may not always be good solution because workers can have different hardware than spaces and might not be that centralized in the physical network. </p>
+<p>A space-worker compute system has one or many centralized spaces. A lot of tasks and data are being sent to, from and through these spaces which makes the system vulnerable if one should fail. There are ways to handle a failed space but the process can be complicated. One approach is to let a worker step in as a space and receive a backup state from another space. This may not always be good solution because workers can have different hardware than spaces and might not be that centralized in the physical network. </p>
 
 <p>In a P2P compute system the communication between the peers is equal, which means no bottlenecks. Since all computers are treated the same and behaves the same the result of a failing peer will only result in reduced computational power of one computer. Because of the simple topology of P2P networks this compute system will be very easy to set up and can be scalable. </p>
 
@@ -52,7 +52,8 @@
 <li><p>The failure of a peer will be detected when a communication attempt fails and a RMI exception is caught.</p></li>
 <li><p>It is possible to share objects between the peers in the system in order to solve more complex problems.</p></li>
 <li><p>Workload will be distributed evenly between peers and their workers by keeping a short work queue and making peers request more work from random peers in the network. Test by spawning large TSP task, make sure that all peers have enough work at all times. The goal is to make this system utilize processing power better than the system that was made in homework 5.</p></li>
-<li><p>The system is fail safe. Any number of peers can crash without breaking the network or the current computation. The system doesn't tolerate that two peers crash at the same time. Test by running a large task and then force some peers to disconnect while computing tasks.</p></li>
+<li><p>The system is fail-safe. Any number of peers can crash without breaking the network or the current computation. The system doesn't tolerate that two peers crash at the same time. Test by running a large task and then force some peers to disconnect while computing tasks.</p></li>
+<li><p>This project is realized as an API which people can use to distribute their computations on a distributed cluster.</p></li>
 </ul><h2>Performance Requirements</h2>
 
 <p>The performance of the system will be tested by running three kinds of tasks; TSP, Mandelbrot and Fibonacci computations. The goal is that the peer to peer system should compute these tasks faster than what has been achieved in the homework tasks in the course. The performance of the homework compute system is well documented and should be easily comparable to the measurement from the peer to peer system. </p>
@@ -65,28 +66,33 @@
 <li><p>Making the system consistent when faced with failing machines and randomly disconnecting peers</p></li>
 <li><p>Distributing workload as efficiently as possible</p></li>
 <li><p>Sharing variables between the peers</p></li>
-<li>
+<li><p>Keeping Divide and Conquer and other functionality from earlier work (homework 5 in 290B)</p></li>
 </ul><h2>Architecture</h2>
 
 <ul>
-<li><p>The peer to peer system will have no central authority, all peers are equal.</p></li>
-<li><p>All peers can talk to all other peers whenever they want to. It is possible to send messages to specific peers or simply a broadcast to all peers.All peers keeps references to all the other peers in the network.</p></li>
-<li><p>Worload will be distributed by making the peers that are running out of work ask other random peers for more work. It will then take possible available work from the queue of other peers.</p></li>
+<li><p>The peer to peer system has no central authority, all peers are equal.</p></li>
+<li><p>All peers can talk to all other peers whenever they want to. It is possible to send messages to specific peers or simply a broadcast to all peers. All peers keeps references to all the other peers in the network.</p></li>
+<li><p>Workload distribution is implemented as random work stealing. That is, whenever the task queue of a peer is shorter than some limit, the peer will start asking random peers for more work.</p></li>
 <li><p>The task system supports DAC and the ability to share a variable between the workers.</p></li>
 <li><p>The shared variable will be broadcasted to all peers which will update their variable if it is "newer" than the one they already have.</p></li>
-<li><p>This project will be realized as an API which people can use to distribute their computations on a distributed cluster.</p></li>
+<li><p>Failure tolerance is achieved by storing copies of the task queues as a remote queue in another peer so that the data isn't lost in case the peer fails. Each time a peer connects or loses it's remote queue it will ask if some peer in the network can keep a copy of it's tasks. Each peer can store as many as two queues for other peers. When a peer detects that the peer it is holding a copy queue for has failed it will merge the copy-queue into it's own task queue.</p></li>
 </ul><h2>Experiments</h2>
 
-<p>TODO</p>
+<p>When the results are compared with those from homework 5 it seems that the system is faster at some tasks but slower at others. Typically, tasks with a lot of message passing has become faster, while tasks which needs to send a lot of data becomes slower since the P2P implementation moves data around a bit more than the homework system.</p>
+
+<p>TODO Experimental results go here.</p>
 
 <h2>Conclusions [and Future Work]</h2>
 
-<p><a href="https://docs.google.com/presentation/d/16m83JV8LcCqfi9ZARdg1_cN7ZgimBz6GvWBRLZE8oLM/edit">Project presentation slides</a>
-TODO</p>
+<p>TODO conclusion</p>
 
 <h2>References</h2>
 
-<p>TODO</p>
+<p><a href="https://docs.google.com/presentation/d/16m83JV8LcCqfi9ZARdg1_cN7ZgimBz6GvWBRLZE8oLM/edit">Project presentation slides</a></p>
+
+<p>Jim Waldo, Geoff Wyant, Ann Wollrath, and Sam Kendall. A Note on Distributed Computing. SMLI TR-94-29, Sun Microsystems Laboratories, M/S 29-01, 2550 Garcia Avenue Mountain View, CA 94043, November 1994. </p>
+
+<p>Robert D. Blumofe, Christopher F. Joerg, Bradley C. Kuszmaul, Charles E. Leiserson, Keith H. Randall, and Yuli Zhou. Cilk: An Efficient Multithreaded Runtime System,ACM SIGPLAN Symposium on Principles &amp; Practice of Parallel Programming (PPoPP '95), Santa Barbara CA, July 19 - 21, 1995. </p>
       </section>
     </div>
 
