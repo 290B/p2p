@@ -10,6 +10,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.BlockingDeque;
@@ -101,6 +102,7 @@ public class PeerImpl implements Peer {
 				Registry remoteRegistry = LocateRegistry.getRegistry(remotePeer, remotePort);
 	    		Peer initPeer  = (Peer) remoteRegistry.lookup("Peer");
 	    		peer.updatePeerMap(initPeer.getPeerMap());
+	    		peer.translations.putAll(initPeer.getTranslations());
 	    		Message msg = new EntryMessage(peer.peerID, peer);
 	    		msg.broadcast(peer, false);
 			}else{
@@ -574,12 +576,27 @@ public class PeerImpl implements Peer {
 		if (remoteQ == null){
 			remoteQ = rq;
 			this.remoteQueueHost = remoteQueueHost;
+			Object [] task_array = readyQ.toArray();
+			for (int i = 0; i < task_array.length; i++){
+				rq.putTask(((Task)task_array[i]).clone());
+			}
+			
+			for (Map.Entry<String, Task> entry : waitMap.entrySet())
+			{
+				rq.putWaitTask(entry.getValue().clone());
+			}
 			System.out.println("Recieved reference to a remote Queue!");
 			return true;
 		}
 		return false;
 	}
+	
+	public Map<UUID, UUID> getTranslations() throws RemoteException{
+		return translations;
+	}
+
 }
+
 
 
 
