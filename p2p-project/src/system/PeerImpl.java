@@ -119,8 +119,14 @@ public class PeerImpl implements Peer {
 			MessageOutProxy messageOutProxy = peer.new MessageOutProxy();
 			messageOutProxy.start();
 
-			Executor executor = new Executor(peer);
-			executor.start();
+			Executor executor1 = new Executor(peer);
+			executor1.start();
+			Executor executor2 = new Executor(peer);
+			executor2.start();
+			Executor executor3 = new Executor(peer);
+			executor3.start();
+			Executor executor4 = new Executor(peer);
+			executor4.start();
 			
 			WorkStealer workStealer = peer.new WorkStealer();
 			workStealer.start();
