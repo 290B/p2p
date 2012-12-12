@@ -81,13 +81,17 @@ See Javadocs for code specific architecture. </p>
 <li><p>Failure tolerance is achieved by storing copies of the task queues as a remote queue in another peer so that the data isn't lost in case the peer fails. Each time a peer connects or loses it's remote queue it will ask if some peer in the network can keep a copy of it's tasks. Each peer can store as many as two queues for other peers. When a peer detects that the peer it is holding a copy queue for has failed it will merge the copy-queue into it's own task queue.</p></li>
 </ul><h2>Experiments</h2>
 
-<p>When the results are compared with those from homework 5 it seems that the system is faster at some tasks but slower at others. Typically, tasks with a lot of message passing has become faster, while tasks which needs to send a lot of data becomes slower since the P2P implementation moves data around a bit more than the homework system.</p>
+<p>When the results are compared with those from homework 5 it seems that the system is faster at some tasks but slower at others. Typically, tasks with a lot of message passing has become faster, while tasks which needs to send a lot of data becomes slower since the P2P implementation moves data around a bit more than the homework system. One reason for the reduced execution time of some tasks may be that a different data structure is used for holding the task queues in the P2P implementation vs. the homework implementation. This data could possibly have been implemented in the homework as well and given it a significant speed up.</p>
 
-<p>TODO Experimental results go here.</p>
+<p>Below a figure of the measured execution times can bee seen. The execution times measured is the average of ten samples.</p>
+
+<p><img src="http://www.cs.ucsb.edu/%7Etorgel/290b/p2p/experimental-data.png" alt="Execution times for various tasks"></p>
 
 <h2>Conclusions [and Future Work]</h2>
 
-<p>TODO conclusion</p>
+<p>The system that has been created is failure tolerant, and as long as only one machine fails at a time, every peer can fail in succession until only one is left. The system is also somewhat faster than the homework, especially at tasks, like Fibonacci, which sends a huge amount of messages. It must be mentioned that the speed up may be a result of choosing a more efficient data structure in the P2P system than in the homework system.</p>
+
+<p>The system's API should be relatively easy to use for someone who wants to distribute work on a cluster.</p>
 
 <h2>References</h2>
 
