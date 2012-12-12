@@ -37,7 +37,7 @@
 
 <h2>Abstract</h2>
 
-<p>We have implemented a P2P compute engine that does not fail if one or multiple peers crashes or disconnects. The system supports Divide And Conquer (DAC), shared variables, is scalable and does not suffer from bottlenecks due to network communication. </p>
+<p>We have implemented a distributed P2P compute engine that does not fail if one or multiple peers crashes or disconnects. The system supports multi-core computations, Divide And Conquer (DAC), shared variables, it is scalable and does not suffer from bottlenecks due to network communication. </p>
 
 <h2>Introduction</h2>
 
@@ -45,13 +45,15 @@
 
 <p>In a P2P compute system the communication between the peers is equal, which means no bottlenecks. Since all computers are treated the same and behaves the same the result of a failing peer will only result in reduced computational power of one computer. Because of the simple topology of P2P networks this compute system will be very easy to set up and can be scalable. </p>
 
+<p><img src="http://www.cs.ucsb.edu/%7Etorgel/290b/p2p/systems.png" alt="p2p vs space-worker"></p>
+
 <h2>Functional Requirements</h2>
 
 <ul>
 <li><p>The network starts with a single peer which starts its own network. Other peers can connect to the network by sending a connect message to any peer in the network given by IP and port. There is no notion of a tracker or a centralized system for handling connects and failures.</p></li>
 <li><p>The failure of a peer will be detected when a communication attempt fails and a RMI exception is caught.</p></li>
 <li><p>It is possible to share objects between the peers in the system in order to solve more complex problems.</p></li>
-<li><p>Workload will be distributed evenly between peers and their workers by keeping a short work queue and making peers request more work from random peers in the network. Test by spawning large TSP task, make sure that all peers have enough work at all times. The goal is to make this system utilize processing power better than the system that was made in homework 5.</p></li>
+<li><p>Workload will be distributed evenly between peers and their workers by keeping a short work queue and making peers request more work from random peers in the nethttp://<a href="http://www.cs.ucsb.edu/%7Etorgel/290b/p2p/experimental-data.pngwork">www.cs.ucsb.edu/~torgel/290b/p2p/experimental-data.pngwork</a>. Test by spawning large TSP task, make sure that all peers have enough work at all times. The goal is to make this system utilize processing power better than the system that was made in homework 5.</p></li>
 <li><p>The system is fail-safe. Any number of peers can crash without breaking the network or the current computation. The system doesn't tolerate that two peers crash at the same time. Test by running a large task and then force some peers to disconnect while computing tasks.</p></li>
 <li><p>This project is realized as an API which people can use to distribute their computations on a distributed cluster.</p></li>
 </ul><h2>Performance Requirements</h2>
@@ -96,6 +98,8 @@ See Javadocs for code specific architecture. </p>
 <h2>References</h2>
 
 <p><a href="https://docs.google.com/presentation/d/16m83JV8LcCqfi9ZARdg1_cN7ZgimBz6GvWBRLZE8oLM/edit">Project presentation slides</a></p>
+
+<p><a href="http://www.cs.ucsb.edu/%7Ecappello/290B/homework/">The homework which is being compared to our system</a></p>
 
 <p>Jim Waldo, Geoff Wyant, Ann Wollrath, and Sam Kendall. A Note on Distributed Computing. SMLI TR-94-29, Sun Microsystems Laboratories, M/S 29-01, 2550 Garcia Avenue Mountain View, CA 94043, November 1994. </p>
 
