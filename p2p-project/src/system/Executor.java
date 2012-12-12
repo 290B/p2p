@@ -2,6 +2,8 @@ package system;
 
 import java.rmi.RemoteException;
 
+import api.Task;
+
 
 public class Executor extends Thread{
 	PeerImpl peer;

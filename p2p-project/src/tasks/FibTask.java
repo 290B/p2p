@@ -2,7 +2,8 @@ package tasks;
 
 import java.io.Serializable;
 
-import system.Task;
+import api.Task;
+
 
 
 /**

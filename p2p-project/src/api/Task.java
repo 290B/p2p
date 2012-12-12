@@ -1,8 +1,10 @@
-package system;
+package api;
 
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.UUID;
+
+import system.PeerImpl;
 
 
 public abstract class Task implements Serializable , Cloneable {

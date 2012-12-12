@@ -20,6 +20,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import api.Task;
+import api.Task.Shared;
+
 import clients.FibClient;
 import clients.MandelbrotClient;
 import clients.TspCli;
@@ -34,7 +37,6 @@ import messages.SetSharedVarMessage;
 import messages.TaskCompletedMessage;
 import messages.TerminateMessage;
 
-import system.Task.Shared;
 
 public class PeerImpl implements Peer {
 	static PeerImpl peer;

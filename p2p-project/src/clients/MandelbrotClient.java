@@ -12,8 +12,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
+import api.Task;
+
 import system.Peer;
-import system.Task;
 import tasks.*;
 
 public class MandelbrotClient extends Thread{

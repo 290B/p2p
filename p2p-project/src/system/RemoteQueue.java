@@ -3,6 +3,8 @@ package system;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import api.Task;
+
 public interface RemoteQueue extends Remote{
 	public void putWaitTask(Task t) throws RemoteException;
 	public void removeWaitTask(String id) throws RemoteException;

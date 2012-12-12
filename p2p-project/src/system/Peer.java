@@ -5,6 +5,8 @@ import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.UUID;
 
+import api.Task;
+
 import messages.Message;
 
 

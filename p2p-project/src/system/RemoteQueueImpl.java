@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import api.Task;
+
 public class RemoteQueueImpl implements RemoteQueue{
 	public UUID user;
 	public Map<String, Task> waitMap = new ConcurrentHashMap<String , Task>();

@@ -3,8 +3,9 @@ package tasks;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import system.Task;
-import system.Task.Shared;
+import api.Task;
+import api.Task.Shared;
+
 
 /**
  * This class implements a Traveling Salesman Problem solver as a task

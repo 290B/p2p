@@ -1,8 +1,8 @@
 package messages;
 
+import api.Task;
+import api.Task.Shared;
 import system.PeerImpl;
-import system.Task;
-import system.Task.Shared;
 
 public class SetSharedVarMessage extends Message{
 	private static final long serialVersionUID = 1L;

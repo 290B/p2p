@@ -1,12 +1,14 @@
 package clients;
 
 import javax.swing.*;
+
+import api.Task.Shared;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;  
 
 import system.Peer;
-import system.Task.Shared;
 import tasks.TspTask.*;
 import tasks.TspTask;
 
