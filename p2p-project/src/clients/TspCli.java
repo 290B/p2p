@@ -1,9 +1,11 @@
-package system;
+package clients;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;  
+
+import system.Peer;
 import system.Task.Shared;
 import tasks.TspTask.*;
 import tasks.TspTask;
@@ -69,7 +71,7 @@ public class TspCli extends Thread{
 	//{18,17},
 	//{18,19},
 	};
-    TspCli(Peer peer){
+    public TspCli(Peer peer){
     	this.peer = peer;
     }
 	//LOL

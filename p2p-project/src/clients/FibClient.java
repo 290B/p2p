@@ -1,5 +1,6 @@
-package system;
+package clients;
 
+import system.PeerImpl;
 import tasks.FibTask;
 import tasks.FibTask.Fib;
 

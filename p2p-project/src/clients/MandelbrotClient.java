@@ -1,4 +1,4 @@
-package system;
+package clients;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -12,6 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
+import system.Peer;
+import system.Task;
 import tasks.*;
 
 public class MandelbrotClient extends Thread{
@@ -27,7 +29,7 @@ public class MandelbrotClient extends Thread{
 	// ---------------------------------
 	
 	
-	MandelbrotClient(Peer peer, String string_task){
+	public MandelbrotClient(Peer peer, String string_task){
 		this.peer = peer;
 	}
 	

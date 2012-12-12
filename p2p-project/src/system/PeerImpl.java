@@ -20,6 +20,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import clients.FibClient;
+import clients.MandelbrotClient;
+import clients.TspCli;
+
 import messages.DisconnectedMessage;
 import messages.EntryMessage;
 import messages.GetRemoteQueueMessage;
