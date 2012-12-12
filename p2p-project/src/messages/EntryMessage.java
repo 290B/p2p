@@ -1,12 +1,15 @@
-package system;
+package messages;
 
 import java.util.UUID;
+
+import system.Peer;
+import system.PeerImpl;
 
 public class EntryMessage extends Message{
 	private static final long serialVersionUID = 1L;
 	private Peer newPeer;
 	private UUID id;
-	EntryMessage(UUID id, Peer peer){
+	public EntryMessage(UUID id, Peer peer){
 		this.newPeer = peer;
 		this.id = id;
 	}

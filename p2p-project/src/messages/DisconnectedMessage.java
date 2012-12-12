@@ -1,8 +1,11 @@
-package system;
+package messages;
 
 import java.util.Map;
 import java.util.UUID;
 
+import system.PeerImpl;
+import system.RemoteQueueImpl;
+import system.Task;
 import system.PeerImpl.GetRemoteQueue;
 
 public class DisconnectedMessage extends Message{

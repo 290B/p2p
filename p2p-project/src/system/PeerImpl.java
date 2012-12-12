@@ -20,6 +20,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import messages.DisconnectedMessage;
+import messages.EntryMessage;
+import messages.GetRemoteQueueMessage;
+import messages.GetTaskMessage;
+import messages.HelloMessage;
+import messages.Message;
+import messages.SetSharedVarMessage;
+import messages.TaskCompletedMessage;
+import messages.TerminateMessage;
+
 import system.Task.Shared;
 
 public class PeerImpl implements Peer {
@@ -29,7 +39,7 @@ public class PeerImpl implements Peer {
 	static final BlockingDeque<Message> messagesOut = new LinkedBlockingDeque<Message>();
 	//public ArrayList<Peer> peers = new ArrayList<Peer>();
 	public Shared shared = null;
-	UUID peerID;
+	public UUID peerID;
 	public ArrayList<UUID> keys = new ArrayList<UUID>();
 	public Map<UUID, Peer> peerMap = new ConcurrentHashMap<UUID , Peer>();
 	

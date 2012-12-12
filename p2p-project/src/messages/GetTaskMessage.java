@@ -1,7 +1,10 @@
-package system;
+package messages;
 
 import java.rmi.RemoteException;
 import java.util.UUID;
+
+import system.PeerImpl;
+import system.Task;
 
 
 // TODO: create a message for returning tasks

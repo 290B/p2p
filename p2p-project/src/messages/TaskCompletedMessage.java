@@ -1,7 +1,10 @@
-package system;
+package messages;
 
 import java.util.Map;
 import java.util.UUID;
+
+import system.PeerImpl;
+import system.RemoteQueueImpl;
 
 public class TaskCompletedMessage extends Message{
 	

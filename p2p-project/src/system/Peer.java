@@ -5,6 +5,8 @@ import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.UUID;
 
+import messages.Message;
+
 
 public interface Peer extends Remote {
 	public void putTask(Task t) throws RemoteException;

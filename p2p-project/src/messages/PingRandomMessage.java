@@ -1,4 +1,6 @@
-package system;
+package messages;
+
+import system.PeerImpl;
 
 public class PingRandomMessage extends Message{
 	private static final long serialVersionUID = 1L;

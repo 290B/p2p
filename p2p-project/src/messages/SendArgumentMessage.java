@@ -1,6 +1,9 @@
-package system;
+package messages;
 
 import java.rmi.RemoteException;
+
+import system.PeerImpl;
+import system.Task;
 
 public class SendArgumentMessage extends Message{
 	private static final long serialVersionUID = 1L; 

@@ -11,7 +11,7 @@ public abstract class Task implements Serializable , Cloneable {
 	public String returnID;
 	public int joinCounter;
 	public int returnArgumentNumber;
-	protected Object[] args;
+	public Object[] args;
 	public LinkedList<Task> spawned = new LinkedList<Task>();
 	public Task spawn_next;
 	public int spawn_nextJoin;

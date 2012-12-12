@@ -1,14 +1,18 @@
-package system;
+package messages;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.UUID;
 
+import system.PeerImpl;
+import system.RemoteQueue;
+import system.RemoteQueueImpl;
+
 public class GetRemoteQueueMessage extends Message {
 	private static final long serialVersionUID = 1L;
 	private UUID sender;
 	
-	GetRemoteQueueMessage(UUID sender){
+	public GetRemoteQueueMessage(UUID sender){
 		this.sender = sender;
 	}
 	public void action(PeerImpl peer){

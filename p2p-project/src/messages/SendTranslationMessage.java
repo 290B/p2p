@@ -1,6 +1,8 @@
-package system;
+package messages;
 
 import java.util.UUID;
+
+import system.PeerImpl;
 
 public class SendTranslationMessage extends Message{
 	private static final long serialVersionUID = 1L;
