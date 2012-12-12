@@ -8,15 +8,12 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -131,9 +128,6 @@ public class PeerImpl implements Peer {
 			
 			MessageInProxy messageProxy = peer.new MessageInProxy();
 			messageProxy.start();
-			
-			MessageOutProxy messageOutProxy = peer.new MessageOutProxy();
-			messageOutProxy.start();
 
 			Executor executor1 = new Executor(peer);
 			executor1.start();
@@ -188,7 +182,7 @@ public class PeerImpl implements Peer {
 		public UI(){}
 		public void run(){
 			while(true){	
-				//System.out.println("Options: id, exit, terminate, size, hello, mandelbrot, random, readyQ, waitMap");
+				System.out.println("Options: mandelbrot, tsp, fib, hello, size, id, exit, terminate");
 				try {
 					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			        String input = br.readLine();
@@ -202,9 +196,6 @@ public class PeerImpl implements Peer {
 					}
 					if (input.equals("size")){
 						System.out.println("Number of nodes is: " +  peerMap.size());
-					}
-					if (input.equals("keys")){
-						System.out.println("The size of keys is: " +  keys.size());
 					}
 					if (input.equals("terminate")){
 						Message msg = new TerminateMessage();
@@ -229,21 +220,8 @@ public class PeerImpl implements Peer {
 						FibClient client = new FibClient(peer);
 						client.start();
 					}
-					
-					if (input.equals("readyQ")){
-							System.out.println("The size of readyQ is : " +  readyQ.size());
-					}
-					if (input.equals("waitMap")){
-						System.out.println("The size of waitMap is : " +  waitMap.size());
-					}
 					if (input.equals("executed")){
 						System.out.println("The number of tasks executed is : " +  taskExcecuted);
-					}
-					if (input.equals("compose")){
-						System.out.println("The number of compose tasks created is : " +  composeTasksCreated);
-					}
-					if(input.equals("arg")){
-						System.out.println(argumentThrownAway);
 					}
 				} catch (IOException e) {
 					System.out.println("ERROR: UI.run()");
@@ -392,16 +370,6 @@ public class PeerImpl implements Peer {
 		this.peerMap.putAll(peerMap);
 	}
 	
-	/*public boolean placeArgument(UUID receiver, String ID, Object returnValue, int returnArgumentNumber){
-		Message msg = new SendArgumentMessage(ID, returnValue, returnArgumentNumber);
-		if (peerMap.containsKey(receiver)){
-			return msg.send(peer, receiver);
-		}else if (translations.containsKey(receiver)){ // recursive call
-			return placeArgument(translations.get(receiver), ID, returnValue, returnArgumentNumber);
-		}else{
-			return false;
-		}
-	}*/
 	
 	
 	public boolean placeArgument(UUID receiver, String taskID, Object returnValue, int returnArgumentNumber){
@@ -486,23 +454,6 @@ public class PeerImpl implements Peer {
 				try {
 					msg = messagesIn.take();
 					msg.action(peer);
-				} catch (InterruptedException e) {
-					System.out.println("ERROR: MessageProxy()");
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	public class MessageOutProxy extends Thread{
-		public MessageOutProxy(){}
-		
-		public void run(){
-			while(true){
-				Message msg;
-				try {
-					msg = messagesOut.take();
-					argumentThrownAway++;
-					
 				} catch (InterruptedException e) {
 					System.out.println("ERROR: MessageProxy()");
 					e.printStackTrace();
