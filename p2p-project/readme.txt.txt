@@ -1,5 +1,7 @@
 ###########################  P2P compute system ########################################
 
+
+
 Currently supports TSP and Mandelbrot
 
 to start a peer type:
@@ -10,4 +12,12 @@ Once started three parameters have to be specified:
  - Port that the remote peer uses (default is 1099)
  - Local port (if left blank if will chose port 1099 and not connect to another peer. This is used for the firs peer int the circle)
 
+
+The project is available at github: http://290b.github.com/p2p/
+
+
+
+Creators: 
+Oeyvind Rein   - oyvind.re@gmail.com	
+Torgeir Lien   - slooth@gmail.com
 
